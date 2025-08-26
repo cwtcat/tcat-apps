@@ -1,0 +1,16 @@
+*{box-sizing:border-box}
+.page{display:flex;flex-direction:column;min-height:100vh;background:#d9dce1;}
+.toolbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e5e7eb;background:#fafafa}
+.controls{display:flex;align-items:center;gap:12px}
+.btn{background:#111827;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-family:'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;}
+.btn:hover{opacity:.9}
+.slider{width:420px}
+.day-label{font-weight:600;padding:2px 8px;border:1px solid #e5e7eb;border-radius:6px;background:#fff}
+.legend{display:flex;align-items:center;gap:12px}
+.legend-title{font-size:14px;color:#374151}
+.legend-bar{width:160px;height:10px;background:linear-gradient(90deg,#3b82f6,#f3f4f6,#ef4444);border-radius:8px;border:1px solid #e5e7eb}
+.legend-scale{display:flex;justify-content:space-between;width:160px;font-size:12px;color:#6b7280}
+.chart-wrap{position:relative;flex:1;display:flex;justify-content:center;align-items:center;padding:16px}
+svg{background:#e5e7eb;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.05);font-family:'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;}
+.tooltip{position:absolute;pointer-events:none;background:#111827;color:#fff;font-size:12px;padding:8px 10px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.25);white-space:nowrap;display:none}
+.footer{padding:8px 16px;color:#6b7280;border-top:1px solid #e5e7eb}
