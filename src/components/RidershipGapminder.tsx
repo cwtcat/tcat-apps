@@ -40,6 +40,17 @@ const USE_QUANTILES = false
 const QMIN = 0.00   // try 0.05
 const QMAX = 1.00   // try 0.95
 
+// Format ISO "YYYY-MM-DD" -> "Monday, 8/4/25"
+function formatDayBanner(iso: string) {
+  if (!iso) return ''
+  const d = new Date(iso + 'T00:00:00Z') // avoid TZ drift
+  const parts = new Intl.DateTimeFormat('en-US', {
+    weekday: 'long', month: 'numeric', day: 'numeric', year: '2-digit'
+  }).formatToParts(d)
+  const get = (t: string) => parts.find(p => p.type === t)?.value ?? ''
+  return `${get('weekday')}, ${get('month')}/${get('day')}/${get('year')}`
+}
+
 type FadeMode = 'min' | 'geo' | 'mean' // kept for signature compatibility if you re-enable axis fade elsewhere
 const FADE_MODE: FadeMode = 'geo'
 
@@ -101,7 +112,7 @@ export default function RidershipGapminder({
   onBusClick,
   width = 1100,
   height = 720,
-  transitionMs = 1500,
+  transitionMs = 2500,
 }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null)
   const tooltipRef = useRef<HTMLDivElement | null>(null)
@@ -234,6 +245,31 @@ export default function RidershipGapminder({
       .attr('class', 'root')
       .attr('transform', `translate(${MARGIN.left},${MARGIN.top})`)
 
+    // ------- Day banner (daily mode only) -------
+    const showDaily = mode === 'daily' && currentDay
+    const bannerText = showDaily ? formatDayBanner(currentDay) : ''
+
+    const banner = g.selectAll<SVGTextElement, string>('text.day-banner')
+      .data(showDaily ? [bannerText] : [])
+
+    banner.join(
+      enter => enter.append('text')
+        .attr('class', 'day-banner')
+        .attr('x', plotW / 2)
+        .attr('y', -10)                 // inside the plot, just above the chart area
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 14)
+        .attr('font-weight', 600)
+        .attr('fill', '#111827')
+        .style('pointer-events', 'none')
+        .text(d => d),
+      update => update
+        .text(d => d)
+        .attr('x', plotW / 2)
+        .attr('y', -10),
+      exit => exit.remove()
+    )
+    
     // Axes
     g.selectAll('g.x-axis').data([null]).join('g')
       .attr('class', 'x-axis')
