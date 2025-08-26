@@ -1,42 +1,105 @@
-#root {
+/* -------- Global base (fonts, layout, resets) -------- */
+:root {
+  --bg-page: #f3f4f6;
+  --bg-panel: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #d1d5db;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+html, body, #root, button, input, select, textarea {
+  font-family: "Inter", "Roboto", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+}
+
+body {
+  margin: 0;
+  background: var(--bg-page);
+}
+
+/* -------- Utility-ish bits you use across the app -------- */
+.container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+  padding: 0 16px;
 }
 
 .card {
-  padding: 2em;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
 }
 
-.read-the-docs {
-  color: #888;
+/* -------- Chart area & SVG text -------- */
+.chart-wrap {
+  position: relative;           /* positions tooltip */
+  background: #f3f4f6;          /* light gray for glow contrast */
+  border-radius: 12px;
+}
+
+.chart-wrap text {
+  font-family: "Inter", "Roboto", "Segoe UI", "Helvetica Neue", Arial, sans-serif; /* ensure SVG text is sans-serif */
+  fill: var(--text);
+}
+
+/* Axis labels & small text within SVG */
+.x-label, .y-label, .label, .day-banner {
+  font-weight: 500;
+}
+
+/* -------- Tooltip (D3 adds <div class="tooltip">) -------- */
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: "Inter", "Roboto", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.4;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 1000;
+}
+
+/* -------- Header legend, if you use custom markup -------- */
+.legend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.legend-title {
+  font-weight: 600;
+}
+.legend-scale {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  font-size: 12px;
+}
+
+/* -------- Basic controls -------- */
+button, select, input[type="range"] {
+  font: inherit;
+}
+
+button {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+select {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
 }

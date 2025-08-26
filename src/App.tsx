@@ -77,10 +77,10 @@ export default function App() {
     setI(0) // reset slider
   }, [filteredRows])
 
-  // Autoplay only in daily + main view
+  // Autoplay only in daily + main view SET DELAY BETWEEN DAYS(4000ms)
   useEffect(() => {
     if (!playing || mode !== 'daily' || view !== 'main' || days.length === 0) return
-    const id = setInterval(() => setI(v => (v + 1) % days.length), 3500)
+    const id = setInterval(() => setI(v => (v + 1) % days.length), 4000)
     return () => clearInterval(id)
   }, [playing, days.length, mode, view, days])
 

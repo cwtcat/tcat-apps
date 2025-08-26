@@ -101,7 +101,7 @@ export default function RidershipGapminder({
   onBusClick,
   width = 1100,
   height = 720,
-  transitionMs = 2500,
+  transitionMs = 1500,
 }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null)
   const tooltipRef = useRef<HTMLDivElement | null>(null)
