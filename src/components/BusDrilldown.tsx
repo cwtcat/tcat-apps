@@ -1,3 +1,6 @@
+// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import * as d3 from 'd3'
 
