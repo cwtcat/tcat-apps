@@ -8,10 +8,8 @@ type View = 'main' | 'drill'
 
 function normalizeDateLike(s: string): string | null {
   if (!s) return null
-  // Try ISO first
   const isoLike = /^\d{4}-\d{2}-\d{2}$/.test(s.trim())
   if (isoLike) return s.trim()
-  // Otherwise parse and reformat as YYYY-MM-DD
   const d = new Date(s)
   if (isNaN(+d)) return null
   const y = d.getFullYear()
@@ -44,6 +42,14 @@ function mapHeader(obj: Record<string, any>, key: keyof typeof HEADER_MAP) {
   return undefined
 }
 
+// Base-URL aware logo URL (works in dev and when deployed under a subpath)
+const baseUrl =
+  (import.meta as any)?.env?.BASE_URL ??
+  (process as any)?.env?.PUBLIC_URL ??
+  '/'
+
+const logoUrl = new URL('tcat_logo.jpg', baseUrl).toString()
+
 export default function App() {
   // Data state
   const [rawRows, setRawRows] = useState<DataRow[]>([])
@@ -71,13 +77,12 @@ export default function App() {
   }, [rawRows, startDate, endDate])
 
   useEffect(() => {
-    // derive days array from filteredRows
     const uniqueDays = Array.from(new Set(filteredRows.map(r => r.service_day))).sort()
     setDays(uniqueDays)
     setI(0) // reset slider
   }, [filteredRows])
 
-  // Autoplay only in daily + main view SET DELAY BETWEEN DAYS(4000ms)
+  // Autoplay only in daily + main view (4s per day)
   useEffect(() => {
     if (!playing || mode !== 'daily' || view !== 'main' || days.length === 0) return
     const id = setInterval(() => setI(v => (v + 1) % days.length), 4000)
@@ -101,7 +106,6 @@ export default function App() {
       complete: (res) => {
         const out: DataRow[] = []
         for (const row of res.data as any[]) {
-          // Extract with header mapping
           const sd = mapHeader(row, 'service_day')
           const bid = mapHeader(row, 'bus_id')
           const fx = mapHeader(row, 'farebox')
@@ -109,8 +113,8 @@ export default function App() {
 
           const service_day = normalizeDateLike(String(sd ?? ''))
           const bus_id = (bid ?? '').toString().trim()
-
           if (!service_day || !bus_id) continue
+
           out.push({
             service_day,
             bus_id,
@@ -121,12 +125,10 @@ export default function App() {
         out.sort((a,b) => a.service_day.localeCompare(b.service_day) || a.bus_id.localeCompare(b.bus_id))
         setRawRows(out)
 
-        // initialize date range to full span
         const uniqueDates = Array.from(new Set(out.map(r => r.service_day))).sort()
         setStartDate(uniqueDates[0] ?? null)
         setEndDate(uniqueDates[uniqueDates.length - 1] ?? null)
 
-        // reset UI state
         setView('main')
         setMode('daily')
         setSelectedBusId(null)
@@ -147,9 +149,7 @@ export default function App() {
     setView('drill')
   }
 
-  const handleBack = () => {
-    setView('main')
-  }
+  const handleBack = () => setView('main')
 
   // Helper: when user changes start/end ensure start<=end
   const setStart = (v: string) => {
@@ -163,9 +163,96 @@ export default function App() {
 
   return (
     <div className="page">
+      {/* ======= TOP TOOLBAR ======= */}
       <header className="toolbar">
-        <div className="controls" style={{ gap: 8 }}>
-          {/* CSV loader */}
+        {/* LEFT: agency/logo JPG */}
+        <div className="left">
+          <img src={logoUrl} alt="Agency Logo" className="logo" />
+        </div>
+
+        {/* CENTER: all your existing controls (except Load CSV) */}
+        <div className="center">
+          <div className="controls" style={{ gap: 8 }}>
+            {/* Date range (enabled once data loaded) */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: rawRows.length ? 1 : 0.5 }}>
+              <label style={{ fontSize: 14, color: '#374151' }}>From:&nbsp;
+                <input
+                  type="date"
+                  value={startDate ?? ''}
+                  min={allDates[0] ?? ''}
+                  max={endDate ?? allDates[allDates.length - 1] ?? ''}
+                  onChange={e => setStart(e.target.value)}
+                  disabled={!rawRows.length}
+                  style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
+                />
+              </label>
+              <label style={{ fontSize: 14, color: '#374151' }}>To:&nbsp;
+                <input
+                  type="date"
+                  value={endDate ?? ''}
+                  min={startDate ?? allDates[0] ?? ''}
+                  max={allDates[allDates.length - 1] ?? ''}
+                  onChange={e => setEnd(e.target.value)}
+                  disabled={!rawRows.length}
+                  style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
+                />
+              </label>
+            </div>
+
+            {view === 'main' ? (
+              <>
+                <button
+                  className="btn"
+                  onClick={() => setMode(m => m === 'daily' ? 'monthly' : 'daily')}
+                  disabled={!filteredRows.length}
+                >
+                  {mode === 'daily' ? 'Switch to Monthly' : 'Switch to Daily'}
+                </button>
+
+                {/* Bus selector */}
+                <label style={{ fontSize: 14, color: '#374151' }}>
+                  Bus:&nbsp;
+                  <select
+                    value={selectedBusId ?? ''}
+                    onChange={e => setSelectedBusId(e.target.value || null)}
+                    disabled={!filteredRows.length}
+                    style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
+                  >
+                    <option value="">All buses</option>
+                    {busOptions.map(b => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                </label>
+
+                {mode === 'daily' && (
+                  <>
+                    <button className="btn" onClick={() => setPlaying(p => !p)} disabled={!days.length}>
+                      {playing ? 'Pause' : 'Play'}
+                    </button>
+                    <input
+                      className="slider"
+                      type="range"
+                      min={0}
+                      max={Math.max(0, days.length - 1)}
+                      value={Math.min(i, Math.max(0, days.length - 1))}
+                      onChange={e => setI(parseInt(e.target.value,10))}
+                      disabled={!days.length}
+                    />
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <button className="btn" onClick={handleBack}>← Back</button>
+                <div className="day-label">Bus {drillBusId} — daily view (drilldown)</div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT: Load CSV button (moved here) */}
+        <div className="right">
           <label className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
             Load CSV
             <input
@@ -175,93 +262,14 @@ export default function App() {
               onChange={e => {
                 const f = e.target.files?.[0]
                 if (f) onPickCsv(f)
-                // allow re-upload of same file
-                e.currentTarget.value = ''
+                e.currentTarget.value = '' // allow re-upload of same file
               }}
             />
           </label>
-
-          {/* Date range (enabled once data loaded) */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: rawRows.length ? 1 : 0.5 }}>
-            <label style={{ fontSize: 14, color: '#374151' }}>From:&nbsp;
-              <input
-                type="date"
-                value={startDate ?? ''}
-                min={allDates[0] ?? ''}
-                max={endDate ?? allDates[allDates.length - 1] ?? ''}
-                onChange={e => setStart(e.target.value)}
-                disabled={!rawRows.length}
-                style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
-              />
-            </label>
-            <label style={{ fontSize: 14, color: '#374151' }}>To:&nbsp;
-              <input
-                type="date"
-                value={endDate ?? ''}
-                min={startDate ?? allDates[0] ?? ''}
-                max={allDates[allDates.length - 1] ?? ''}
-                onChange={e => setEnd(e.target.value)}
-                disabled={!rawRows.length}
-                style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
-              />
-            </label>
-          </div>
-
-          {view === 'main' ? (
-            <>
-              <button
-                className="btn"
-                onClick={() => setMode(m => m === 'daily' ? 'monthly' : 'daily')}
-                disabled={!filteredRows.length}
-              >
-                {mode === 'daily' ? 'Switch to Monthly' : 'Switch to Daily'}
-              </button>
-
-              {/* Bus selector */}
-              <label style={{ fontSize: 14, color: '#374151' }}>
-                Bus:&nbsp;
-                <select
-                  value={selectedBusId ?? ''}
-                  onChange={e => setSelectedBusId(e.target.value || null)}
-                  disabled={!filteredRows.length}
-                  style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
-                >
-                  <option value="">All buses</option>
-                  {busOptions.map(b => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
-              </label>
-
-              {mode === 'daily' && (
-                <>
-                  <button className="btn" onClick={() => setPlaying(p => !p)} disabled={!days.length}>
-                    {playing ? 'Pause' : 'Play'}
-                  </button>
-                  <input
-                    className="slider"
-                    type="range"
-                    min={0}
-                    max={Math.max(0, days.length - 1)}
-                    value={Math.min(i, Math.max(0, days.length - 1))}
-                    onChange={e => setI(parseInt(e.target.value,10))}
-                    disabled={!days.length}
-                  />
-
-                </>
-              )}
-            </>
-          ) : (
-            <>
-              <button className="btn" onClick={handleBack}>← Back</button>
-              <div className="day-label">Bus {drillBusId} — daily view (drilldown)</div>
-            </>
-          )}
         </div>
-
       </header>
 
-      {/* Body */}
+      {/* ======= BODY ======= */}
       {rawRows.length === 0 ? (
         <div style={{ padding: 24, color: '#6b7280' }}>
           Load a CSV to begin. Expected columns: <code>service_day</code>, <code>bus_id</code>, <code>farebox</code>, <code>apc</code>.

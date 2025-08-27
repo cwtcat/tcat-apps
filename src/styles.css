@@ -1,6 +1,45 @@
 *{box-sizing:border-box}
 .page{display:flex;flex-direction:column;min-height:100vh;background:#d9dce1;}
 .toolbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e5e7eb;background:#fafafa}
+/* ===== Toolbar layout: left (logo), center (controls), right (Load CSV) ===== */
+.toolbar {
+  display: flex;
+  justify-content: space-between; /* left | center | right */
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+.toolbar .left,
+.toolbar .center,
+.toolbar .right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Keep center from shrinking; center its contents */
+.toolbar .center {
+  flex: 1;
+  justify-content: center;
+  min-width: 0; /* allow contents to shrink nicely */
+}
+
+/* Logo placement/size */
+.logo {
+  height: 40px;
+  width: auto;
+  border-radius: 6px; /* optional rounding */
+}
+
+/* Optional: make the slider not overflow on smaller widths */
+.slider {
+  max-width: 420px;
+  width: min(420px, 30vw);
+}
+
+
 .controls{display:flex;align-items:center;gap:12px}
 .btn{background:#111827;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-family:'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;}
 .btn:hover{opacity:.9}
