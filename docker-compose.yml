@@ -16,6 +16,8 @@ services:
       - "traefik.http.services.tcatapp.loadbalancer.server.port=80"
     networks:
       - web
+    volumes:
+      - /opt/tcat-apps/public:/usr/share/nginx/html/day_chart:ro      
 
 networks:
   web:
