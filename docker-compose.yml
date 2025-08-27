@@ -5,8 +5,8 @@ services:
     build:
       context: .
       # 👇 build.args must be a mapping (key: value)
-      args:
-        VITE_API_URL: "https://api.convergentcode.com"
+      #args:
+      #  VITE_API_URL: "https://api.convergentcode.com"
     image: tcat-app:latest
     restart: unless-stopped
     expose:
