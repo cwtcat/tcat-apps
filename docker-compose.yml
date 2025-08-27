@@ -4,13 +4,10 @@ services:
   tcat_app:
     build:
       context: .
-      # 👇 build.args must be a mapping (key: value)
-      #args:
-      #  VITE_API_URL: "https://api.convergentcode.com"
     image: tcat-app:latest
     restart: unless-stopped
     expose:
-      - "80"
+      - "80"  # internal only; do NOT publish host ports
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tcatapp.rule=Host(`tcat-app.convergentcode.com`)"
