@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  tcat_app:
+    build:
+      context: .
+      args:
+        # Set your API URL here if your app needs it at build time:
+        # VITE_API_URL: "https://api.convergentcode.com"
+        # If your app is fully static and doesn’t need API URL at build, remove this.
+        # VITE_API_URL: "https://api.convergentcode.com"
+    image: tcat-app:latest
+    restart: unless-stopped
+    expose:
+      - "80"  # expose internally; do not publish a host port
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.tcatapp.rule=Host(`tcat-app.convergentcode.com`)
+      - traefik.http.routers.tcatapp.entrypoints=web,websecure
+      - traefik.http.routers.tcatapp.tls.certresolver=le
+      - traefik.http.services.tcatapp.loadbalancer.server.port=80
+    networks:
+      - web
+
+networks:
+  web:
+    external: true

@@ -14,15 +14,15 @@ type Props = {
   width?: number
   height?: number
   transitionMs?: number
+  /** Directory prefix for PNGs, e.g. "/day_charts/". Must include trailing slash or desired delimiter. */
+  pngDir?: string
 }
 
 const MARGIN = { top: 28, right: 24, bottom: 56, left: 72 }
 
 // --- Symmetric percent-diff color model (range-based; NO axis whitening) ---
-const HUE_RED = '#d64d4dff'
+const HUE_RED  = '#d64d4dff'
 const HUE_BLUE = '#2563eb'
-
-// Global strength shaping
 const INTENSITY_FLOOR = 0.14
 const INTENSITY_BOOST = 1.10
 const GAMMA_RANGE = 0.85
@@ -31,7 +31,7 @@ const USE_QUANTILES = false
 const QMIN = 0.00
 const QMAX = 1.00
 
-// Percent difference relative to mean of the two values
+// Percent difference relative to the mean of the two values
 function pctDiff(xVal: number, yVal: number) {
   const ax = Math.max(0, xVal), ay = Math.max(0, yVal)
   const denom = (ax + ay) / 2
@@ -40,7 +40,7 @@ function pctDiff(xVal: number, yVal: number) {
 }
 
 function computePctDiffRange<T extends { xPlot: number; yPlot: number }>(rows: T[]) {
-  const vals = rows.map(r => pctDiff(r.xPlot, r.yPlot)).filter(Number.isFinite).sort((a, b) => a - b)
+  const vals = rows.map(r => pctDiff(r.xPlot, r.yPlot)).filter(Number.isFinite).sort((a,b)=>a-b)
   if (!vals.length) return { pMin: 0, pMax: 1 }
   if (USE_QUANTILES) {
     const pMin = d3.quantile(vals, QMIN) ?? vals[0]
@@ -76,20 +76,55 @@ function getSymmetricFill<T extends { xPlot: number; yPlot: number }>(
   return mixTo(hue, intensity)
 }
 
+// Format "YYYY-MM-DD" -> "YYMMDD" (e.g., 2025-08-04 → 250804)
+function toDateId(iso: string) {
+  if (!iso || iso.length < 10) return ''
+  const y = iso.slice(2, 4)
+  const m = iso.slice(5, 7)
+  const d = iso.slice(8, 10)
+  return `${y}${m}${d}`
+}
+
 export default function BusDrilldown({
   data,
   busId,
   width = 1100,
   height = 720,
   transitionMs = 1500,
+  pngDir = '/day_charts/',
 }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null)
   const tooltipRef = useRef<HTMLDivElement | null>(null)
 
-  const rows = useMemo(() => {
+  // --- Lightbox state for clicked PNG (and image load/error) ---
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [imgLoaded, setImgLoaded] = useState(false)
+  const [imgError, setImgError] = useState(false)
+
+  const closePreview = () => {
+    setPreviewUrl(null)
+    setImgLoaded(false)
+    setImgError(false)
+  }
+
+  // Prevent page scroll while lightbox is open; add Esc-to-close
+  useEffect(() => {
+    if (previewUrl) {
+      const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closePreview() }
+      const orig = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      window.addEventListener('keydown', onKey)
+      return () => {
+        document.body.style.overflow = orig
+        window.removeEventListener('keydown', onKey)
+      }
+    }
+  }, [previewUrl])
+
+  const rowsSrc = useMemo(() => {
     const r = data.filter(d => d.bus_id === busId)
       .slice()
-      .sort((a, b) => (a.service_day < b.service_day ? -1 : a.service_day > b.service_day ? 1 : 0))
+      .sort((a,b) => (a.service_day < b.service_day ? -1 : a.service_day > b.service_day ? 1 : 0))
     return r
   }, [data, busId])
 
@@ -100,7 +135,7 @@ export default function BusDrilldown({
   }
 
   const derived = useMemo<RowD[]>(() => {
-    return rows.map(d => {
+    return rowsSrc.map(d => {
       const missingFarebox = d.farebox == null
       const missingApc = d.apc == null
       const xVal = missingFarebox ? 0 : d.farebox!
@@ -109,7 +144,7 @@ export default function BusDrilldown({
       const size = Math.max(d.apc ?? 0, d.farebox ?? 0)
       return { ...d, xPlot: xVal, yPlot: yVal, sizeMetric: size, relDelta: Math.max(-0.2, Math.min(0.2, rel)), missingApc, missingFarebox }
     })
-  }, [rows])
+  }, [rowsSrc])
 
   const extents = useMemo(() => {
     let fxMax = 1, axMax = 1, volMax = 1
@@ -129,16 +164,6 @@ export default function BusDrilldown({
   const x = d3.scaleLinear().domain(extents.xDomain).range([0, plotW])
   const y = d3.scaleLinear().domain(extents.yDomain).range([plotH, 0])
   const r = d3.scaleSqrt().domain(extents.sizeDomain).range([4, 22])
-
-  // --- Wheel-driven highlight state ---
-  const maxIdx = Math.max(0, derived.length - 1)
-  const [activeIdx, setActiveIdx] = useState<number>(maxIdx) // default to last day
-  const lastWheelTs = useRef<number>(0)
-
-  // keep activeIdx in bounds if data changes
-  useEffect(() => {
-    setActiveIdx(i => Math.min(i, Math.max(0, derived.length - 1)))
-  }, [derived.length])
 
   useEffect(() => {
     const svg = d3.select(svgRef.current)
@@ -180,11 +205,11 @@ export default function BusDrilldown({
     // labels
     g.selectAll('text.x-label').data([null]).join('text')
       .attr('class', 'x-label')
-      .attr('x', plotW / 2).attr('y', plotH + 44).attr('text-anchor', 'middle')
+      .attr('x', plotW/2).attr('y', plotH + 44).attr('text-anchor', 'middle')
       .text(`Farebox — Bus ${busId}`)
     g.selectAll('text.y-label').data([null]).join('text')
       .attr('class', 'y-label')
-      .attr('transform', `translate(${-56},${plotH / 2}) rotate(-90)`)
+      .attr('transform', `translate(${-56},${plotH/2}) rotate(-90)`)
       .attr('text-anchor', 'middle')
       .text('APC')
 
@@ -214,13 +239,13 @@ export default function BusDrilldown({
         .attr('r', 0)
         .attr('fill', d => getSymmetricFill(d, x.domain()[1], y.domain()[1], derived))
         .attr('stroke', '#000')
-        .attr('data-idx', (_, i) => i)
         .attr('fill-opacity', d => (d.missingApc || d.missingFarebox) ? 0.25 : 0.9)
         .attr('stroke-width', d => (d.missingApc || d.missingFarebox) ? 1.4 : 0.8)
+        .style('cursor', 'zoom-in')
         .call(enter => enter.transition().duration(transitionMs).attr('r', d => Math.max(3, r(d.sizeMetric))))
     ) as d3.Selection<SVGCircleElement, RowD, SVGGElement, unknown>
 
-    // Labels above each daily circle (MM-DD)
+    // ---- Labels above each daily circle (MM-DD) ----
     const fmt = (s: string) => (s && s.length >= 10 ? s.slice(5) : s)
     const labels = g.selectAll<SVGTextElement, RowD>('text.label')
       .data(derived, (d: any) => d.service_day)
@@ -233,7 +258,6 @@ export default function BusDrilldown({
         .attr('text-anchor', 'middle')
         .attr('font-size', 10)
         .attr('fill', '#111827')
-        .attr('data-idx', (_, i) => i)
         .attr('opacity', d => (d.missingApc || d.missingFarebox) ? 0.6 : 0.95)
         .text(d => fmt(d.service_day))
         .style('pointer-events', 'none'),
@@ -246,17 +270,12 @@ export default function BusDrilldown({
       exit => exit.remove()
     )
 
-    // Hover interactions
+    // interactions
     merged
       .on('mouseenter', function (event, d) {
-        // when hovering, also set activeIdx to this point for consistency
-        const idx = +(this as SVGCircleElement).getAttribute('data-idx')!
-        setActiveIdx(idx)
-
         d3.select(this as SVGCircleElement)
           .attr('filter', 'url(#glow-yellow)')
           .attr('stroke-width', 2.5)
-
         const pDiffPct = (pctDiff(d.xPlot, d.yPlot) * 100).toFixed(1)
         const direction = d.yPlot >= d.xPlot ? 'APC > Farebox' : 'Farebox > APC'
         const html = `<div><b>Bus ${busId}</b> — ${d.service_day}</div>
@@ -275,89 +294,120 @@ export default function BusDrilldown({
           .attr('stroke-width', (d.missingApc || d.missingFarebox) ? 1.4 : 0.8)
         tooltip.style('display', 'none')
       })
+      .on('click', (_, d) => {
+        // Build image URL: "{pngDir}{YYMMDD}_{bus}_chart.png"
+        const dateId = toDateId(d.service_day)
+        if (!dateId) return
+        const url = `${pngDir}${dateId}_${busId}_chart.png`
 
-    // --- Apply highlight styling (wheel or hover sets activeIdx) ---
-    const applyActiveHighlight = () => {
-      merged
-        .attr('filter', function () {
-          const idx = +(this as SVGCircleElement).getAttribute('data-idx')!
-          return idx === activeIdx ? 'url(#glow-yellow)' : null
-        })
-        .attr('stroke-width', function (d) {
-          const idx = +(this as SVGCircleElement).getAttribute('data-idx')!
-          if (idx === activeIdx) return 2.6
-          return (d.missingApc || d.missingFarebox) ? 1.4 : 0.8
-        })
-        .attr('fill-opacity', function (d) {
-          const idx = +(this as SVGCircleElement).getAttribute('data-idx')!
-          return idx === activeIdx ? 0.95 : (d.missingApc || d.missingFarebox) ? 0.25 : 0.55
-        })
-        .attr('stroke-opacity', function (d) {
-          const idx = +(this as SVGCircleElement).getAttribute('data-idx')!
-          return idx === activeIdx ? 1 : 0.6
-        })
+        // reset preview state and open
+        setImgLoaded(false)
+        setImgError(false)
+        setPreviewUrl(url)
 
-      labels
-        .attr('opacity', function () {
-          const idx = +(this as SVGTextElement).getAttribute('data-idx')!
-          return idx === activeIdx ? 1 : 0.7
-        })
-    }
+        // hide tooltip when opening
+        d3.select(tooltipRef.current).style('display', 'none')
+      })
 
-    applyActiveHighlight()
-
-    // --- Scroll wheel handler to step through days (chronological) ---
-    const el = svgRef.current
-    if (el) {
-      const onWheel = (e: WheelEvent) => {
-        // only act when mouse is over the SVG area
-        // prevent page scroll to make cycling precise
-        e.preventDefault()
-
-        // simple throttle so one tick ~ one step
-        const now = performance.now()
-        if (now - lastWheelTs.current < 80) return
-        lastWheelTs.current = now
-
-        const dir = e.deltaY > 0 ? +1 : -1 // down -> next, up -> prev
-        setActiveIdx((i) => {
-          const next = Math.max(0, Math.min(maxIdx, i + dir))
-          // update tooltip position/content for the new active point
-          const d = derived[next]
-          if (d) {
-            const cx = MARGIN.left + x(d.xPlot)
-            const cy = MARGIN.top + y(d.yPlot)
-            const pDiffPct = (pctDiff(d.xPlot, d.yPlot) * 100).toFixed(1)
-            const direction = d.yPlot >= d.xPlot ? 'APC > Farebox' : 'Farebox > APC'
-            tooltip.html(
-              `<div><b>Bus ${busId}</b> — ${d.service_day}</div>
-               <div>Farebox: ${d.farebox ?? '—'}</div>
-               <div>APC: ${d.apc ?? '—'}</div>
-               <div>Percent Δ (sym.): ${pDiffPct}%</div>
-               <div style='opacity:.85'>${direction}</div>`
-            )
-            // place tooltip near the point (offset a bit so it doesn't cover the circle)
-            const bbox = el.getBoundingClientRect()
-            tooltip
-              .style('left', `${cx + 18}px`)
-              .style('top', `${cy + 18}px`)
-              .style('display', 'block')
-          }
-          return next
-        })
-      }
-
-      // add as non-passive so preventDefault works
-      el.addEventListener('wheel', onWheel, { passive: false })
-      return () => el.removeEventListener('wheel', onWheel as any)
-    }
-
-  }, [derived, extents, width, height, busId, transitionMs, activeIdx, maxIdx])
+  }, [derived, extents, width, height, busId, transitionMs, pngDir])
 
   return (
-    <div className="chart-wrap">
+    <div className="chart-wrap" style={{ position: 'relative' }}>
       <svg ref={svgRef} width={width} height={height} />
       <div ref={tooltipRef} className="tooltip" />
+
+      {/* --- Lightbox overlay for clicked PNG --- */}
+      {previewUrl && (
+        <div
+          aria-modal
+          role="dialog"
+          onClick={closePreview}   // clicking backdrop closes
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 2000,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()} // prevent backdrop close when clicking panel
+            style={{
+              position: 'relative',
+              background: '#111827',
+              padding: 12,
+              borderRadius: 12,
+              maxWidth: '92vw',
+              maxHeight: '88vh',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.45)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12,
+              alignItems: 'center',   // center content & button
+              justifyContent: 'center',
+              minWidth: 320,
+              minHeight: 200
+            }}
+          >
+            {/* Image element: hidden until it loads; clicking image closes */}
+            {!imgError && (
+              <img
+                src={previewUrl}
+                alt="Daily bus chart"
+                onLoad={() => setImgLoaded(true)}
+                onError={() => { setImgLoaded(false); setImgError(true) }}
+                onClick={closePreview}
+                style={{
+                  maxWidth: '88vw',
+                  maxHeight: '76vh',
+                  objectFit: 'contain',
+                  borderRadius: 8,
+                  background: '#fff',
+                  cursor: 'zoom-out',
+                  display: imgLoaded ? 'block' : 'none' // no broken icon / no flash
+                }}
+              />
+            )}
+
+            {/* Message when image fails to load */}
+            {imgError && (
+              <div
+                onClick={closePreview}
+                style={{
+                  color: '#f9fafb',
+                  fontWeight: 700,
+                  letterSpacing: '0.03em',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                  textAlign: 'center'
+                }}
+              >
+                NO DATA AVAILABLE
+              </div>
+            )}
+
+            {/* Centered Exit button */}
+            <button
+              onClick={closePreview}
+              className="btn"
+              style={{
+                alignSelf: 'center',
+                background: '#f3f4f6',
+                color: '#111827',
+                border: '1px solid #d1d5db',
+                borderRadius: 8,
+                padding: '6px 10px',
+                cursor: 'pointer',
+                minWidth: 88
+              }}
+            >
+              Exit
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

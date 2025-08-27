@@ -256,9 +256,9 @@ export default function RidershipGapminder({
       enter => enter.append('text')
         .attr('class', 'day-banner')
         .attr('x', plotW / 2)
-        .attr('y', -10)                 // inside the plot, just above the chart area
+        .attr('y', 30)                 // inside the plot, just above the chart area
         .attr('text-anchor', 'middle')
-        .attr('font-size', 14)
+        .attr('font-size', 46)
         .attr('font-weight', 600)
         .attr('fill', '#111827')
         .style('pointer-events', 'none')
@@ -266,10 +266,10 @@ export default function RidershipGapminder({
       update => update
         .text(d => d)
         .attr('x', plotW / 2)
-        .attr('y', -10),
+        .attr('y', 30),
       exit => exit.remove()
     )
-    
+
     // Axes
     g.selectAll('g.x-axis').data([null]).join('g')
       .attr('class', 'x-axis')
