@@ -302,7 +302,6 @@ export default function BusDrilldown({
         const dateId = toDateId(d.service_day)
         if (!dateId) return
         const url = `${pngDir}${dateId}_${busId}_chart.png`
-        alert(url)
         // reset preview state and open
         setImgLoaded(false)
         setImgError(false)
