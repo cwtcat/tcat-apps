@@ -6,6 +6,9 @@ import './styles.css'
 
 type View = 'main' | 'drill'
 
+/** Public path to the default CSV (served by Nginx). Put the file in public/data/default_ridership.csv */
+const DEFAULT_CSV_PATH = '/data/default_ridership.csv'
+
 function normalizeDateLike(s: string): string | null {
   if (!s) return null
   const isoLike = /^\d{4}-\d{2}-\d{2}$/.test(s.trim())
@@ -42,14 +45,6 @@ function mapHeader(obj: Record<string, any>, key: keyof typeof HEADER_MAP) {
   return undefined
 }
 
-// Base-URL aware logo URL (works in dev and when deployed under a subpath)
-const baseUrl =
-  (import.meta as any)?.env?.BASE_URL ??
-  (process as any)?.env?.PUBLIC_URL ??
-  '/'
-
-const logoUrl = new URL('tcat_logo.jpg', baseUrl).toString()
-
 export default function App() {
   // Data state
   const [rawRows, setRawRows] = useState<DataRow[]>([])
@@ -70,42 +65,26 @@ export default function App() {
   const [startDate, setStartDate] = useState<string | null>(null)
   const [endDate, setEndDate] = useState<string | null>(null)
 
-  // Recompute filtered rows + derived days whenever inputs change
-  const filteredRows = useMemo(() => {
-    if (!startDate || !endDate) return rawRows
-    return rawRows.filter(r => r.service_day >= startDate && r.service_day <= endDate)
-  }, [rawRows, startDate, endDate])
-
+  // -------- Default CSV loader (on mount) --------
+  // We load the default only if there's no data yet.
   useEffect(() => {
-    const uniqueDays = Array.from(new Set(filteredRows.map(r => r.service_day))).sort()
-    setDays(uniqueDays)
-    setI(0) // reset slider
-  }, [filteredRows])
-
-  // Autoplay only in daily + main view (4s per day)
-  useEffect(() => {
-    if (!playing || mode !== 'daily' || view !== 'main' || days.length === 0) return
-    const id = setInterval(() => setI(v => (v + 1) % days.length), 4000)
-    return () => clearInterval(id)
-  }, [playing, days.length, mode, view, days])
-
-  const currentDay = days[i] ?? ''
-
-  // Bus options from filtered rows
-  const busOptions = useMemo(
-    () => Array.from(new Set(filteredRows.map(r => r.bus_id))).sort((a,b)=>a.localeCompare(b)),
-    [filteredRows]
-  )
-
-  // CSV loader
-  const onPickCsv = useCallback((file: File) => {
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      dynamicTyping: false,
-      complete: (res) => {
+    let cancelled = false
+    async function loadDefault() {
+      try {
+        // If user already loaded data, don't overwrite.
+        if (rawRows.length > 0) return
+        const resp = await fetch(DEFAULT_CSV_PATH, { cache: 'no-store' })
+        if (!resp.ok) {
+          console.warn(`Default CSV fetch failed: ${resp.status} ${resp.statusText}`)
+          return
+        }
+        const csvText = await resp.text()
+        const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true })
+        if (parsed.errors?.length) {
+          console.warn('Default CSV parse warnings:', parsed.errors.slice(0, 3))
+        }
         const out: DataRow[] = []
-        for (const row of res.data as any[]) {
+        for (const row of (parsed.data as any[])) {
           const sd = mapHeader(row, 'service_day')
           const bid = mapHeader(row, 'bus_id')
           const fx = mapHeader(row, 'farebox')
@@ -123,12 +102,90 @@ export default function App() {
           })
         }
         out.sort((a,b) => a.service_day.localeCompare(b.service_day) || a.bus_id.localeCompare(b.bus_id))
+        if (cancelled) return
+
         setRawRows(out)
 
         const uniqueDates = Array.from(new Set(out.map(r => r.service_day))).sort()
         setStartDate(uniqueDates[0] ?? null)
         setEndDate(uniqueDates[uniqueDates.length - 1] ?? null)
 
+        // reset UI state
+        setView('main')
+        setMode('daily')
+        setSelectedBusId(null)
+        setDrillBusId(null)
+        setI(0)
+      } catch (e) {
+        console.error('Failed to load default CSV:', e)
+      }
+    }
+    loadDefault()
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // run once on mount
+
+  // Recompute filtered rows + derived days whenever inputs change
+  const filteredRows = useMemo(() => {
+    if (!startDate || !endDate) return rawRows
+    return rawRows.filter(r => r.service_day >= startDate && r.service_day <= endDate)
+  }, [rawRows, startDate, endDate])
+
+  useEffect(() => {
+    // derive days array from filteredRows
+    const uniqueDays = Array.from(new Set(filteredRows.map(r => r.service_day))).sort()
+    setDays(uniqueDays)
+    setI(0) // reset slider
+  }, [filteredRows])
+
+  // Autoplay only in daily + main view (4s)
+  useEffect(() => {
+    if (!playing || mode !== 'daily' || view !== 'main' || days.length === 0) return
+    const id = setInterval(() => setI(v => (v + 1) % days.length), 4000)
+    return () => clearInterval(id)
+  }, [playing, days.length, mode, view, days])
+
+  const currentDay = days[i] ?? ''
+
+  // Bus options from filtered rows
+  const busOptions = useMemo(
+    () => Array.from(new Set(filteredRows.map(r => r.bus_id))).sort((a,b)=>a.localeCompare(b)),
+    [filteredRows]
+  )
+
+  // Manual CSV loader (unchanged)
+  const onPickCsv = useCallback((file: File) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: false,
+      complete: (res) => {
+        const out: DataRow[] = []
+        for (const row of res.data as any[]) {
+          const sd = mapHeader(row, 'service_day')
+          const bid = mapHeader(row, 'bus_id')
+          const fx = mapHeader(row, 'farebox')
+          const ax = mapHeader(row, 'apc')
+
+          const service_day = normalizeDateLike(String(sd ?? ''))
+          const bus_id = (bid ?? '').toString().trim()
+
+          if (!service_day || !bus_id) continue
+          out.push({
+            service_day,
+            bus_id,
+            farebox: parseNumOrNull(fx),
+            apc: parseNumOrNull(ax),
+          })
+        }
+        out.sort((a,b) => a.service_day.localeCompare(b.service_day) || a.bus_id.localeCompare(b.bus_id))
+        setRawRows(out)
+
+        const uniqueDates = Array.from(new Set(out.map(r => r.service_day))).sort()
+        setStartDate(uniqueDates[0] ?? null)
+        setEndDate(uniqueDates[uniqueDates.length - 1] ?? null)
+
+        // reset UI state
         setView('main')
         setMode('daily')
         setSelectedBusId(null)
@@ -149,7 +206,9 @@ export default function App() {
     setView('drill')
   }
 
-  const handleBack = () => setView('main')
+  const handleBack = () => {
+    setView('main')
+  }
 
   // Helper: when user changes start/end ensure start<=end
   const setStart = (v: string) => {
@@ -163,96 +222,9 @@ export default function App() {
 
   return (
     <div className="page">
-      {/* ======= TOP TOOLBAR ======= */}
       <header className="toolbar">
-        {/* LEFT: agency/logo JPG */}
-        <div className="left">
-          <img src={logoUrl} alt="Agency Logo" className="logo" />
-        </div>
-
-        {/* CENTER: all your existing controls (except Load CSV) */}
-        <div className="center">
-          <div className="controls" style={{ gap: 8 }}>
-            {/* Date range (enabled once data loaded) */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: rawRows.length ? 1 : 0.5 }}>
-              <label style={{ fontSize: 14, color: '#374151' }}>From:&nbsp;
-                <input
-                  type="date"
-                  value={startDate ?? ''}
-                  min={allDates[0] ?? ''}
-                  max={endDate ?? allDates[allDates.length - 1] ?? ''}
-                  onChange={e => setStart(e.target.value)}
-                  disabled={!rawRows.length}
-                  style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
-                />
-              </label>
-              <label style={{ fontSize: 14, color: '#374151' }}>To:&nbsp;
-                <input
-                  type="date"
-                  value={endDate ?? ''}
-                  min={startDate ?? allDates[0] ?? ''}
-                  max={allDates[allDates.length - 1] ?? ''}
-                  onChange={e => setEnd(e.target.value)}
-                  disabled={!rawRows.length}
-                  style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
-                />
-              </label>
-            </div>
-
-            {view === 'main' ? (
-              <>
-                <button
-                  className="btn"
-                  onClick={() => setMode(m => m === 'daily' ? 'monthly' : 'daily')}
-                  disabled={!filteredRows.length}
-                >
-                  {mode === 'daily' ? 'Switch to Monthly' : 'Switch to Daily'}
-                </button>
-
-                {/* Bus selector */}
-                <label style={{ fontSize: 14, color: '#374151' }}>
-                  Bus:&nbsp;
-                  <select
-                    value={selectedBusId ?? ''}
-                    onChange={e => setSelectedBusId(e.target.value || null)}
-                    disabled={!filteredRows.length}
-                    style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
-                  >
-                    <option value="">All buses</option>
-                    {busOptions.map(b => (
-                      <option key={b} value={b}>{b}</option>
-                    ))}
-                  </select>
-                </label>
-
-                {mode === 'daily' && (
-                  <>
-                    <button className="btn" onClick={() => setPlaying(p => !p)} disabled={!days.length}>
-                      {playing ? 'Pause' : 'Play'}
-                    </button>
-                    <input
-                      className="slider"
-                      type="range"
-                      min={0}
-                      max={Math.max(0, days.length - 1)}
-                      value={Math.min(i, Math.max(0, days.length - 1))}
-                      onChange={e => setI(parseInt(e.target.value,10))}
-                      disabled={!days.length}
-                    />
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                <button className="btn" onClick={handleBack}>← Back</button>
-                <div className="day-label">Bus {drillBusId} — daily view (drilldown)</div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* RIGHT: Load CSV button (moved here) */}
-        <div className="right">
+        <div className="controls" style={{ gap: 8 }}>
+          {/* CSV loader (still available to override default) */}
           <label className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
             Load CSV
             <input
@@ -262,17 +234,93 @@ export default function App() {
               onChange={e => {
                 const f = e.target.files?.[0]
                 if (f) onPickCsv(f)
-                e.currentTarget.value = '' // allow re-upload of same file
+                e.currentTarget.value = ''
               }}
             />
           </label>
+
+          {/* Date range (enabled once data loaded) */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: rawRows.length ? 1 : 0.5 }}>
+            <label style={{ fontSize: 14, color: '#374151' }}>From:&nbsp;
+              <input
+                type="date"
+                value={startDate ?? ''}
+                min={allDates[0] ?? ''}
+                max={endDate ?? allDates[allDates.length - 1] ?? ''}
+                onChange={e => setStart(e.target.value)}
+                disabled={!rawRows.length}
+                style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
+              />
+            </label>
+            <label style={{ fontSize: 14, color: '#374151' }}>To:&nbsp;
+              <input
+                type="date"
+                value={endDate ?? ''}
+                min={startDate ?? allDates[0] ?? ''}
+                max={allDates[allDates.length - 1] ?? ''}
+                onChange={e => setEnd(e.target.value)}
+                disabled={!rawRows.length}
+                style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
+              />
+            </label>
+          </div>
+
+          {view === 'main' ? (
+            <>
+              <button
+                className="btn"
+                onClick={() => setMode(m => m === 'daily' ? 'monthly' : 'daily')}
+                disabled={!filteredRows.length}
+              >
+                {mode === 'daily' ? 'Switch to Monthly' : 'Switch to Daily'}
+              </button>
+
+              {/* Bus selector */}
+              <label style={{ fontSize: 14, color: '#374151' }}>
+                Bus:&nbsp;
+                <select
+                  value={selectedBusId ?? ''}
+                  onChange={e => setSelectedBusId(e.target.value || null)}
+                  disabled={!filteredRows.length}
+                  style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
+                >
+                  <option value="">All buses</option>
+                  {busOptions.map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+              </label>
+
+              {mode === 'daily' && (
+                <>
+                  <button className="btn" onClick={() => setPlaying(p => !p)} disabled={!days.length}>
+                    {playing ? 'Pause' : 'Play'}
+                  </button>
+                  <input
+                    className="slider"
+                    type="range"
+                    min={0}
+                    max={Math.max(0, days.length - 1)}
+                    value={Math.min(i, Math.max(0, days.length - 1))}
+                    onChange={e => setI(parseInt(e.target.value,10))}
+                    disabled={!days.length}
+                  />
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              <button className="btn" onClick={handleBack}>← Back</button>
+              <div className="day-label">Bus {drillBusId} — daily view (drilldown)</div>
+            </>
+          )}
         </div>
       </header>
 
-      {/* ======= BODY ======= */}
+      {/* Body */}
       {rawRows.length === 0 ? (
         <div style={{ padding: 24, color: '#6b7280' }}>
-          Load a CSV to begin. Expected columns: <code>service_day</code>, <code>bus_id</code>, <code>farebox</code>, <code>apc</code>.
+          Loading default data… If this persists, check that <code>{DEFAULT_CSV_PATH}</code> exists in <code>public/</code> and is reachable.
         </div>
       ) : view === 'main' ? (
         <RidershipGapminder
