@@ -6,7 +6,6 @@ import './styles.css'
 
 type View = 'main' | 'drill'
 
-/** Public path to the default CSV (served by Nginx). Put the file in public/data/default_ridership.csv */
 const DEFAULT_CSV_PATH = '/data/default_ridership.csv'
 
 function normalizeDateLike(s: string): string | null {
@@ -29,7 +28,6 @@ function parseNumOrNull(v: any): number | null {
   return isFinite(n) ? n : null
 }
 
-// If your CSV uses different header names, tweak this mapping.
 const HEADER_MAP = {
   service_day: ['service_day', 'date', 'service date', 'service_day_yyyy_mm_dd'],
   bus_id: ['bus_id', 'bus', 'vehicle', 'vehicle_id'],
@@ -46,76 +44,49 @@ function mapHeader(obj: Record<string, any>, key: keyof typeof HEADER_MAP) {
 }
 
 export default function App() {
-  // Data state
   const [rawRows, setRawRows] = useState<DataRow[]>([])
   const [days, setDays] = useState<string[]>([])
   const [mode, setMode] = useState<Mode>('daily')
   const [view, setView] = useState<View>('main')
   const [selectedBusId, setSelectedBusId] = useState<string | null>(null)
 
-  // Drilldown
   const [drillBusId, setDrillBusId] = useState<string | null>(null)
 
-  // Slider state (index into "days")
   const [i, setI] = useState(0)
-  const [playing, setPlaying] = useState(true)
+  const [playing, setPlaying] = useState(false) // ← start paused
 
-  // Date range state (min/max from the loaded CSV)
   const allDates = useMemo(() => Array.from(new Set(rawRows.map(r => r.service_day))).sort(), [rawRows])
   const [startDate, setStartDate] = useState<string | null>(null)
   const [endDate, setEndDate] = useState<string | null>(null)
 
-  // -------- Default CSV loader (on mount) --------
-  // We load the default only if there's no data yet.
+  // auto-load default CSV on mount (same as before)
   useEffect(() => {
     let cancelled = false
     async function loadDefault() {
       try {
-        // If user already loaded data, don't overwrite.
         if (rawRows.length > 0) return
         const resp = await fetch(DEFAULT_CSV_PATH, { cache: 'no-store' })
-        if (!resp.ok) {
-          console.warn(`Default CSV fetch failed: ${resp.status} ${resp.statusText}`)
-          return
-        }
+        if (!resp.ok) return
         const csvText = await resp.text()
         const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true })
-        if (parsed.errors?.length) {
-          console.warn('Default CSV parse warnings:', parsed.errors.slice(0, 3))
-        }
         const out: DataRow[] = []
         for (const row of (parsed.data as any[])) {
           const sd = mapHeader(row, 'service_day')
           const bid = mapHeader(row, 'bus_id')
           const fx = mapHeader(row, 'farebox')
           const ax = mapHeader(row, 'apc')
-
           const service_day = normalizeDateLike(String(sd ?? ''))
           const bus_id = (bid ?? '').toString().trim()
           if (!service_day || !bus_id) continue
-
-          out.push({
-            service_day,
-            bus_id,
-            farebox: parseNumOrNull(fx),
-            apc: parseNumOrNull(ax),
-          })
+          out.push({ service_day, bus_id, farebox: parseNumOrNull(fx), apc: parseNumOrNull(ax) })
         }
         out.sort((a,b) => a.service_day.localeCompare(b.service_day) || a.bus_id.localeCompare(b.bus_id))
         if (cancelled) return
-
         setRawRows(out)
-
         const uniqueDates = Array.from(new Set(out.map(r => r.service_day))).sort()
         setStartDate(uniqueDates[0] ?? null)
         setEndDate(uniqueDates[uniqueDates.length - 1] ?? null)
-
-        // reset UI state
-        setView('main')
-        setMode('daily')
-        setSelectedBusId(null)
-        setDrillBusId(null)
-        setI(0)
+        setView('main'); setMode('daily'); setSelectedBusId(null); setDrillBusId(null); setI(0)
       } catch (e) {
         console.error('Failed to load default CSV:', e)
       }
@@ -123,22 +94,19 @@ export default function App() {
     loadDefault()
     return () => { cancelled = true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // run once on mount
+  }, [])
 
-  // Recompute filtered rows + derived days whenever inputs change
   const filteredRows = useMemo(() => {
     if (!startDate || !endDate) return rawRows
     return rawRows.filter(r => r.service_day >= startDate && r.service_day <= endDate)
   }, [rawRows, startDate, endDate])
 
   useEffect(() => {
-    // derive days array from filteredRows
     const uniqueDays = Array.from(new Set(filteredRows.map(r => r.service_day))).sort()
     setDays(uniqueDays)
-    setI(0) // reset slider
+    setI(0)
   }, [filteredRows])
 
-  // Autoplay only in daily + main view (4s)
   useEffect(() => {
     if (!playing || mode !== 'daily' || view !== 'main' || days.length === 0) return
     const id = setInterval(() => setI(v => (v + 1) % days.length), 4000)
@@ -147,18 +115,14 @@ export default function App() {
 
   const currentDay = days[i] ?? ''
 
-  // Bus options from filtered rows
   const busOptions = useMemo(
     () => Array.from(new Set(filteredRows.map(r => r.bus_id))).sort((a,b)=>a.localeCompare(b)),
     [filteredRows]
   )
 
-  // Manual CSV loader (unchanged)
   const onPickCsv = useCallback((file: File) => {
     Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      dynamicTyping: false,
+      header: true, skipEmptyLines: true, dynamicTyping: false,
       complete: (res) => {
         const out: DataRow[] = []
         for (const row of res.data as any[]) {
@@ -166,31 +130,17 @@ export default function App() {
           const bid = mapHeader(row, 'bus_id')
           const fx = mapHeader(row, 'farebox')
           const ax = mapHeader(row, 'apc')
-
           const service_day = normalizeDateLike(String(sd ?? ''))
           const bus_id = (bid ?? '').toString().trim()
-
           if (!service_day || !bus_id) continue
-          out.push({
-            service_day,
-            bus_id,
-            farebox: parseNumOrNull(fx),
-            apc: parseNumOrNull(ax),
-          })
+          out.push({ service_day, bus_id, farebox: parseNumOrNull(fx), apc: parseNumOrNull(ax) })
         }
         out.sort((a,b) => a.service_day.localeCompare(b.service_day) || a.bus_id.localeCompare(b.bus_id))
         setRawRows(out)
-
         const uniqueDates = Array.from(new Set(out.map(r => r.service_day))).sort()
         setStartDate(uniqueDates[0] ?? null)
         setEndDate(uniqueDates[uniqueDates.length - 1] ?? null)
-
-        // reset UI state
-        setView('main')
-        setMode('daily')
-        setSelectedBusId(null)
-        setDrillBusId(null)
-        setI(0)
+        setView('main'); setMode('daily'); setSelectedBusId(null); setDrillBusId(null); setI(0)
       },
       error: (err) => {
         console.error('CSV parse error', err)
@@ -199,18 +149,14 @@ export default function App() {
     })
   }, [])
 
-  // Clicking a monthly bubble opens drilldown
   const handleBusClick = (busId: string) => {
     if (mode !== 'monthly') return
     setDrillBusId(busId)
     setView('drill')
   }
 
-  const handleBack = () => {
-    setView('main')
-  }
+  const handleBack = () => setView('main')
 
-  // Helper: when user changes start/end ensure start<=end
   const setStart = (v: string) => {
     if (endDate && v > endDate) setEndDate(v)
     setStartDate(v)
@@ -224,7 +170,6 @@ export default function App() {
     <div className="page">
       <header className="toolbar">
         <div className="controls" style={{ gap: 8 }}>
-          {/* CSV loader (still available to override default) */}
           <label className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
             Load CSV
             <input
@@ -239,7 +184,6 @@ export default function App() {
             />
           </label>
 
-          {/* Date range (enabled once data loaded) */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: rawRows.length ? 1 : 0.5 }}>
             <label style={{ fontSize: 14, color: '#374151' }}>From:&nbsp;
               <input
@@ -275,7 +219,6 @@ export default function App() {
                 {mode === 'daily' ? 'Switch to Monthly' : 'Switch to Daily'}
               </button>
 
-              {/* Bus selector */}
               <label style={{ fontSize: 14, color: '#374151' }}>
                 Bus:&nbsp;
                 <select
@@ -285,9 +228,7 @@ export default function App() {
                   style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
                 >
                   <option value="">All buses</option>
-                  {busOptions.map(b => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
+                  {busOptions.map(b => (<option key={b} value={b}>{b}</option>))}
                 </select>
               </label>
 
@@ -317,10 +258,9 @@ export default function App() {
         </div>
       </header>
 
-      {/* Body */}
       {rawRows.length === 0 ? (
         <div style={{ padding: 24, color: '#6b7280' }}>
-          Loading default data… If this persists, check that <code>{DEFAULT_CSV_PATH}</code> exists in <code>public/</code> and is reachable.
+          Loading default data…
         </div>
       ) : view === 'main' ? (
         <RidershipGapminder
@@ -334,12 +274,7 @@ export default function App() {
           height={720}
         />
       ) : (
-        <BusDrilldown
-          data={filteredRows}
-          busId={drillBusId!}
-          width={1100}
-          height={720}
-        />
+        <BusDrilldown data={filteredRows} busId={drillBusId!} width={1100} height={720} />
       )}
 
       <footer className="footer">

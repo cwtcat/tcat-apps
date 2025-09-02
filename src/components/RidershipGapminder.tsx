@@ -25,28 +25,21 @@ type Props = {
   transitionMs?: number
 }
 
-const MARGIN = { top: 28, right: 24, bottom: 96, left: 72 } // extra bottom for legend
+const MARGIN = { top: 28, right: 24, bottom: 96, left: 72 }
 
-// --- Symmetric percent-diff color model (range-based; NO axis whitening) ---
 const HUE_RED  = '#ef4444'
 const HUE_BLUE = '#2563eb'
-
-// Global strength shaping
 const INTENSITY_FLOOR = 0.14
 const INTENSITY_BOOST = 1.10
-
-// Easing for the range mapping: min pctDiff -> 1, max -> 0
 const GAMMA_RANGE = 0.85
-
-// OPTIONAL: clamp to quantiles to ignore outliers
 const USE_QUANTILES = false
-const QMIN = 0.00   // try 0.05
-const QMAX = 1.00   // try 0.95
+const QMIN = 0.00
+const QMAX = 1.00
 
-// Format ISO "YYYY-MM-DD" -> "Monday, 8/4/25"
+// "YYYY-MM-DD" -> "Monday, 8/4/25"
 function formatDayBanner(iso: string) {
   if (!iso) return ''
-  const d = new Date(iso + 'T00:00:00Z') // avoid TZ drift
+  const d = new Date(iso + 'T00:00:00Z')
   const parts = new Intl.DateTimeFormat('en-US', {
     weekday: 'long', month: 'numeric', day: 'numeric', year: '2-digit'
   }).formatToParts(d)
@@ -54,10 +47,7 @@ function formatDayBanner(iso: string) {
   return `${get('weekday')}, ${get('month')}/${get('day')}/${get('year')}`
 }
 
-type FadeMode = 'min' | 'geo' | 'mean' // kept for signature compatibility if you re-enable axis fade elsewhere
-const FADE_MODE: FadeMode = 'geo'
-
-// Symmetric percent difference from plotted values (xPlot=farebox, yPlot=apc)
+// symmetric percent difference vs mean
 function pctDiff(xVal: number, yVal: number) {
   const ax = Math.max(0, xVal), ay = Math.max(0, yVal)
   const denom = (ax + ay) / 2
@@ -65,7 +55,6 @@ function pctDiff(xVal: number, yVal: number) {
   return Math.abs((ay - ax) / denom)
 }
 
-// Compute pctDiff range for this frame (daily or monthly rows)
 function computePctDiffRange<T extends { xPlot: number; yPlot: number }>(rows: T[]) {
   const vals = rows.map(r => pctDiff(r.xPlot, r.yPlot)).filter(Number.isFinite).sort((a,b)=>a-b)
   if (!vals.length) return { pMin: 0, pMax: 1 }
@@ -80,29 +69,22 @@ function computePctDiffRange<T extends { xPlot: number; yPlot: number }>(rows: T
   }
 }
 
-// Range-based centrality (monotone): smallest pDiff -> 1, largest -> 0, with easing
 function centralityFromRange(pDiff: number, pMin: number, pMax: number) {
-  const t = (pDiff - pMin) / Math.max(1e-6, (pMax - pMin))   // 0..1 across [min,max]
+  const t = (pDiff - pMin) / Math.max(1e-6, (pMax - pMin))
   return Math.pow(Math.max(0, Math.min(1, 1 - t)), GAMMA_RANGE)
 }
 
-// sRGB gamma-mixed white → hue
 const mixTo = (hue: string, t: number) =>
   d3.interpolateRgb.gamma(2.2)('#ffffff', hue)(Math.max(0, Math.min(1, t)))
 
-// Final fill (intensity depends ONLY on percent difference)
 function getSymmetricFill<T extends { xPlot: number; yPlot: number }>(
-  d: T,
-  _xDomMax: number,   // kept for signature compatibility
-  _yDomMax: number,
-  rowsForNorm: T[]
+  d: T, _xDomMax: number, _yDomMax: number, rowsForNorm: T[]
 ) {
   if (d.xPlot <= 0 || d.yPlot <= 0) return '#ffffff'
-
   const hue = (d.yPlot - d.xPlot) >= 0 ? HUE_BLUE : HUE_RED
   const { pMin, pMax } = computePctDiffRange(rowsForNorm)
   const p = pctDiff(d.xPlot, d.yPlot)
-  let intensity = centralityFromRange(p, pMin, pMax) // 1 at min, 0 at max
+  let intensity = centralityFromRange(p, pMin, pMax)
   intensity = INTENSITY_FLOOR + (1 - INTENSITY_FLOOR) * Math.min(1, intensity * INTENSITY_BOOST)
   return mixTo(hue, intensity)
 }
@@ -120,7 +102,6 @@ export default function RidershipGapminder({
   const svgRef = useRef<SVGSVGElement | null>(null)
   const tooltipRef = useRef<HTMLDivElement | null>(null)
 
-  // ---------- Indexing ----------
   const dataByDay = useMemo(() => {
     const m = new Map<string, DataRow[]>()
     for (const r of data) {
@@ -131,7 +112,6 @@ export default function RidershipGapminder({
     return m
   }, [data])
 
-  // Monthly aggregates per bus
   type Agg = { bus_id: string; farebox_sum: number; apc_sum: number; n_fx: number; n_apc: number }
   const monthlyAgg = useMemo(() => {
     const m = new Map<string, Agg>()
@@ -144,7 +124,6 @@ export default function RidershipGapminder({
     return Array.from(m.values())
   }, [data])
 
-  // ---------- Separate domains & scales (standalone per mode) ----------
   const dailyExtents = useMemo(() => {
     let fxMax = 1, axMax = 1, volMax = 1
     for (const r of data) {
@@ -156,11 +135,7 @@ export default function RidershipGapminder({
     }
     fxMax = Math.ceil(fxMax * 1.05)
     axMax = Math.ceil(axMax * 1.05)
-    return {
-      xDomain: [0, fxMax] as [number, number],
-      yDomain: [0, axMax] as [number, number],
-      sizeDomain: [0, volMax] as [number, number],
-    }
+    return { xDomain: [0, fxMax] as [number, number], yDomain: [0, axMax] as [number, number], sizeDomain: [0, volMax] as [number, number] }
   }, [data])
 
   const monthlyExtents = useMemo(() => {
@@ -172,36 +147,30 @@ export default function RidershipGapminder({
     }
     fxMax = Math.ceil(fxMax * 1.05)
     axMax = Math.ceil(axMax * 1.05)
-    return {
-      xDomain: [0, fxMax] as [number, number],
-      yDomain: [0, axMax] as [number, number],
-      sizeDomain: [0, volMax] as [number, number],
-    }
+    return { xDomain: [0, fxMax] as [number, number], yDomain: [0, axMax] as [number, number], sizeDomain: [0, volMax] as [number, number] }
   }, [monthlyAgg])
 
   const plotW = width - MARGIN.left - MARGIN.right
   const plotH = height - MARGIN.top - MARGIN.bottom
 
-  // Daily scales
   const xDaily = d3.scaleLinear().domain(dailyExtents.xDomain).range([0, plotW])
   const yDaily = d3.scaleLinear().domain(dailyExtents.yDomain).range([plotH, 0])
   const rDaily = d3.scaleSqrt().domain(dailyExtents.sizeDomain).range([4, 22])
 
-  // Monthly (standalone) scales
   const xMonthly = d3.scaleLinear().domain(monthlyExtents.xDomain).range([0, plotW])
   const yMonthly = d3.scaleLinear().domain(monthlyExtents.yDomain).range([plotH, 0])
   const rMonthly = d3.scaleSqrt().domain(monthlyExtents.sizeDomain).range([6, 28])
 
-  // Active scales (only ones used to draw & axis)
   const X = mode === 'daily' ? xDaily : xMonthly
   const Y = mode === 'daily' ? yDaily : yMonthly
   const R = mode === 'daily' ? rDaily : rMonthly
 
   useEffect(() => {
-    const svg = d3.select(svgRef.current)
+    const el = svgRef.current
+    if (!el) return
+    const svg = d3.select(el)
     svg.attr('viewBox', `0 0 ${width} ${height}`)
 
-    // --- defs: yellow glow filter + legend gradients (once) ---
     const defs = svg.selectAll('defs').data([null]).join('defs')
     defs.selectAll('filter#glow-yellow').data([null]).join('filter')
       .attr('id', 'glow-yellow')
@@ -219,57 +188,42 @@ export default function RidershipGapminder({
         </feMerge>
       `)
 
-    // Two half-gradients so the center is intense color on both sides
     const gradBlue = defs.selectAll('linearGradient#legend-blue').data([null]).join('linearGradient')
-      .attr('id', 'legend-blue')
-      .attr('x1', '0%').attr('y1', '0%')
-      .attr('x2', '100%').attr('y2', '0%')
+      .attr('id', 'legend-blue').attr('x1', '0%').attr('y1', '0%').attr('x2', '100%').attr('y2', '0%')
     gradBlue.selectAll('stop').data([
       {offset:'0%',   color:'#ffffff'},
       {offset:'100%', color:HUE_BLUE}
-    ]).join('stop')
-      .attr('offset', d=>d.offset)
-      .attr('stop-color', d=>d.color)
+    ]).join('stop').attr('offset', d=>d.offset).attr('stop-color', d=>d.color)
 
     const gradRed = defs.selectAll('linearGradient#legend-red').data([null]).join('linearGradient')
-      .attr('id', 'legend-red')
-      .attr('x1', '0%').attr('y1', '0%')
-      .attr('x2', '100%').attr('y2', '0%')
+      .attr('id', 'legend-red').attr('x1', '0%').attr('y1', '0%').attr('x2', '100%').attr('y2', '0%')
     gradRed.selectAll('stop').data([
       {offset:'0%',   color:HUE_RED},
       {offset:'100%', color:'#ffffff'}
-    ]).join('stop')
-      .attr('offset', d=>d.offset)
-      .attr('stop-color', d=>d.color)
+    ]).join('stop').attr('offset', d=>d.offset).attr('stop-color', d=>d.color)
 
     const g = svg.selectAll<SVGGElement, unknown>('g.root')
-      .data([null])
-      .join('g')
+      .data([null]).join('g')
       .attr('class', 'root')
       .attr('transform', `translate(${MARGIN.left},${MARGIN.top})`)
 
-    // ------- Day banner (daily mode only) -------
+    // Day banner
     const showDaily = mode === 'daily' && currentDay
     const bannerText = showDaily ? formatDayBanner(currentDay) : ''
-
     const banner = g.selectAll<SVGTextElement, string>('text.day-banner')
       .data(showDaily ? [bannerText] : [])
-
     banner.join(
       enter => enter.append('text')
         .attr('class', 'day-banner')
         .attr('x', plotW / 2)
-        .attr('y', 30)                 // inside the plot, just above the chart area
+        .attr('y', 30)
         .attr('text-anchor', 'middle')
         .attr('font-size', 46)
         .attr('font-weight', 600)
         .attr('fill', '#111827')
         .style('pointer-events', 'none')
         .text(d => d),
-      update => update
-        .text(d => d)
-        .attr('x', plotW / 2)
-        .attr('y', 30),
+      update => update.text(d => d).attr('x', plotW / 2).attr('y', 30),
       exit => exit.remove()
     )
 
@@ -278,7 +232,6 @@ export default function RidershipGapminder({
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${plotH})`)
       .call(d3.axisBottom(X).ticks(8).tickSizeOuter(0))
-
     g.selectAll('g.y-axis').data([null]).join('g')
       .attr('class', 'y-axis')
       .call(d3.axisLeft(Y).ticks(8).tickSizeOuter(0))
@@ -288,14 +241,13 @@ export default function RidershipGapminder({
       .attr('class', 'x-label')
       .attr('x', plotW/2).attr('y', plotH + 44).attr('text-anchor', 'middle')
       .text('Farebox')
-
     g.selectAll('text.y-label').data([null]).join('text')
       .attr('class', 'y-label')
       .attr('transform', `translate(${-56},${plotH/2}) rotate(-90)`)
       .attr('text-anchor', 'middle')
       .text('APC')
 
-    // Diagonal y=x
+    // Diagonal
     const diagMax = Math.max(X.domain()[1], Y.domain()[1])
     g.selectAll('line.diagonal').data([null]).join('line')
       .attr('class', 'diagonal')
@@ -306,10 +258,11 @@ export default function RidershipGapminder({
     // Tooltip
     let tooltip = d3.select(tooltipRef.current)
     if (tooltip.empty()) {
-      tooltip = d3.select('.chart-wrap').append('div').attr('class', 'tooltip')
+      const host = svg.node()?.parentElement || document.querySelector('.chart-wrap')
+      if (host) tooltip = d3.select(host).append('div').attr('class', 'tooltip')
     }
 
-    // ---------- MAIN LAYER ----------
+    // -------- Data rows for active mode --------
     type RowD = DataRow & {
       xPlot: number; yPlot: number;
       relDelta: number; sizeMetric: number;
@@ -325,50 +278,31 @@ export default function RidershipGapminder({
         const yVal = missingApc ? 0 : d.apc!
         const rel = d.farebox && d.farebox > 0 && d.apc != null ? (d.apc - d.farebox) / d.farebox : 0
         const size = Math.max(d.apc ?? 0, d.farebox ?? 0)
-        return { ...d, xPlot: xVal, yPlot: yVal, relDelta: Math.max(-0.2, Math.min(0.2, rel)), sizeMetric: size, missingApc, missingFarebox }
+        return { ...d, xPlot:xVal, yPlot:yVal, relDelta: Math.max(-0.2, Math.min(0.2, rel)), sizeMetric:size, missingApc, missingFarebox }
       })
     } else {
       rows = monthlyAgg.map(a => {
         const rel = a.n_fx > 0 ? (a.apc_sum - a.farebox_sum) / Math.max(1, a.farebox_sum) : 0
         const size = Math.max(a.apc_sum, a.farebox_sum)
         return {
-          service_day: 'AGG',
-          bus_id: a.bus_id,
-          apc: a.apc_sum,
-          farebox: a.farebox_sum,
-          xPlot: a.farebox_sum,
-          yPlot: a.apc_sum,
+          service_day: 'AGG', bus_id: a.bus_id,
+          apc: a.apc_sum, farebox: a.farebox_sum,
+          xPlot: a.farebox_sum, yPlot: a.apc_sum,
           relDelta: Math.max(-0.2, Math.min(0.2, rel)),
-          sizeMetric: size,
-          missingApc: a.n_apc === 0,
-          missingFarebox: a.n_fx === 0,
+          sizeMetric: size, missingApc: a.n_apc === 0, missingFarebox: a.n_fx === 0
         }
       })
     }
 
     const defaultOpacity = (d: RowD) => (d.missingApc || d.missingFarebox) ? 0.15 : 0.85
-
-    // Selection-aware appearance
-    const selectedAwareOpacity = (d: RowD) => {
-      if (selectedBusId && d.bus_id !== selectedBusId) return 0.08
-      return defaultOpacity(d)
-    }
-    const selectedAwareStrokeOpacity = (d: RowD) => {
-      if (selectedBusId && d.bus_id !== selectedBusId) return 0.25
-      return 1
-    }
-    const selectedAwareFilter = (d: RowD) =>
-      (selectedBusId && d.bus_id === selectedBusId) ? 'url(#glow-yellow)' : null
-
-    const highlightedStrokeWidth = (d: RowD) => {
-      if (selectedBusId && d.bus_id === selectedBusId) return 2.5
-      return (d.missingApc || d.missingFarebox) ? 1.4 : 0.8
-    }
+    const selectedAwareOpacity = (d: RowD) => (selectedBusId && d.bus_id !== selectedBusId) ? 0.08 : defaultOpacity(d)
+    const selectedAwareStrokeOpacity = (d: RowD) => (selectedBusId && d.bus_id !== selectedBusId) ? 0.25 : 1
+    const selectedAwareFilter = (d: RowD) => (selectedBusId && d.bus_id === selectedBusId) ? 'url(#glow-yellow)' : null
+    const highlightedStrokeWidth = (d: RowD) =>
+      (selectedBusId && d.bus_id === selectedBusId) ? 2.5 : ((d.missingApc || d.missingFarebox) ? 1.4 : 0.8)
 
     // Circles
-    const pts = g.selectAll<SVGCircleElement, RowD>('circle.dot')
-      .data(rows, (d: any) => d.bus_id)
-
+    const pts = g.selectAll<SVGCircleElement, RowD>('circle.dot').data(rows, (d: any) => d.bus_id)
     const merged = pts.join(
       enter => enter.append('circle')
         .attr('class', 'dot')
@@ -393,18 +327,13 @@ export default function RidershipGapminder({
         .attr('filter', d => selectedAwareFilter(d))
         .attr('stroke', '#000')
         .attr('stroke-width', d => highlightedStrokeWidth(d))
-        .style('cursor', mode === 'monthly' ? 'pointer' : 'default')
-      ),
+        .style('cursor', mode === 'monthly' ? 'pointer' : 'default')),
       exit => exit.call(x => x.transition().duration(150).attr('r', 0).remove())
     ) as d3.Selection<SVGCircleElement, RowD, SVGGElement, unknown>
 
-    // ---- Labels (always visible, above each circle) ----
-    const labelOpacity = (d: RowD) =>
-      (selectedBusId && d.bus_id !== selectedBusId) ? 0.25 : 0.9
-
-    const labels = g.selectAll<SVGTextElement, RowD>('text.label')
-      .data(rows, (d: any) => d.bus_id)
-
+    // Labels (bus_id above each circle)
+    const labelOpacity = (d: RowD) => (selectedBusId && d.bus_id !== selectedBusId) ? 0.25 : 0.9
+    const labels = g.selectAll<SVGTextElement, RowD>('text.label').data(rows, (d: any) => d.bus_id)
     labels.join(
       enter => enter.append('text')
         .attr('class', 'label')
@@ -420,12 +349,11 @@ export default function RidershipGapminder({
         .attr('x', d => X(d.xPlot))
         .attr('y', d => Y(d.yPlot) - (R(d.sizeMetric) + 4))
         .attr('opacity', d => labelOpacity(d))
-        .text(d => d.bus_id)
-      ),
+        .text(d => d.bus_id)),
       exit => exit.remove()
     )
 
-    // Hover interactions (also update label opacity accordingly)
+    // Interactions
     merged
       .on('mouseenter', function (event, d) {
         const busId = d.bus_id
@@ -437,7 +365,6 @@ export default function RidershipGapminder({
 
         labels.interrupt().transition().duration(Math.min(150, transitionMs))
           .attr('opacity', p => (p.bus_id === busId ? 1 : 0.25))
-
       })
       .on('mousemove', function (event, d) {
         const pDiffPct = (pctDiff(d.xPlot, d.yPlot) * 100).toFixed(1)
@@ -476,79 +403,106 @@ export default function RidershipGapminder({
         if (mode === 'monthly' && onBusClick) onBusClick(d.bus_id)
       })
 
-    // ---------------- Legend (centered diverging bar + symmetric ticks) ----------------
+    // -------- Daily stats panel (top-right) --------
+    if (mode === 'daily') {
+      const valid = rows.filter(d => d.xPlot > 0 && d.yPlot > 0)
+      const total = rows.length
+      const within = valid.filter(d => pctDiff(d.xPlot, d.yPlot) <= 0.25).length
+      const outside = valid.length - within
+
+      const panelW = 260
+      const panelH = 72
+      const pad = 10
+
+      const statsG = g.selectAll<SVGGElement, any>('g.day-stats')
+        .data([ { total, within, outside } ])
+        .join('g')
+        .attr('class', 'day-stats')
+        .attr('transform', `translate(${plotW - panelW - 4}, ${8})`)
+
+      statsG.selectAll('rect.bg').data([null]).join('rect')
+        .attr('class', 'bg')
+        .attr('x', 0).attr('y', 0)
+        .attr('rx', 8).attr('ry', 8)
+        .attr('width', panelW).attr('height', panelH)
+        .attr('fill', '#ffffff')
+        .attr('fill-opacity', 0.92)
+        .attr('stroke', '#e5e7eb')
+
+      const lines = [
+        `Buses (reported): ${total}`,
+        `Within 25%: ${within}`,
+        `Outside 25%: ${outside}`,
+      ]
+      const textSel = statsG.selectAll<SVGTextElement, string>('text.item').data(lines)
+      textSel.join(
+        enter => enter.append('text')
+          .attr('class', 'item')
+          .attr('x', pad)
+          .attr('y', (_, i) => pad + 16 + i * 18)
+          .attr('font-size', 12)
+          .attr('fill', '#111827')
+          .text(d => d),
+        update => update
+          .attr('x', pad)
+          .attr('y', (_, i) => pad + 16 + i * 18)
+          .text(d => d),
+        exit => exit.remove()
+      )
+    } else {
+      g.selectAll('g.day-stats').remove()
+    }
+
+    // -------- Legend (unchanged) --------
     const legendW = 300
     const legendH = 14
     const legendX = (width - legendW) / 2
-    const legendY = height - 44 // above text label (room for ticks + label)
+    const legendY = height - 44
 
-    const legend = svg.selectAll<SVGGElement, unknown>('g.legend').data([null]).join('g')
+    const legend = svg.selectAll<SVGGElement, unknown>('g.legend')
+      .data([null]).join('g')
       .attr('class','legend')
       .attr('transform', `translate(${legendX}, ${legendY})`)
 
-    // Left half: white -> BLUE (center)
     legend.selectAll('rect.leftBar').data([null]).join('rect')
       .attr('class','leftBar')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', legendW/2)
-      .attr('height', legendH)
+      .attr('x', 0).attr('y', 0)
+      .attr('width', legendW/2).attr('height', legendH)
       .style('fill', 'url(#legend-blue)')
-      .attr('stroke', '#111827')
-      .attr('stroke-width', 0.4)
-      .attr('rx', 2)
+      .attr('stroke', '#111827').attr('stroke-width', 0.4).attr('rx', 2)
 
-    // Right half: RED (center) -> white
     legend.selectAll('rect.rightBar').data([null]).join('rect')
       .attr('class','rightBar')
-      .attr('x', legendW/2)
-      .attr('y', 0)
-      .attr('width', legendW/2)
-      .attr('height', legendH)
+      .attr('x', legendW/2).attr('y', 0)
+      .attr('width', legendW/2).attr('height', legendH)
       .style('fill', 'url(#legend-red)')
-      .attr('stroke', '#111827')
-      .attr('stroke-width', 0.4)
-      .attr('rx', 2)
+      .attr('stroke', '#111827').attr('stroke-width', 0.4).attr('rx', 2)
 
-    // Symmetric axis: -200 .. 0 .. +200 (labels as absolute values)
     const divergeScale = d3.scaleLinear().domain([-200, 200]).range([0, legendW])
     const tickVals = [-200, -100, -50, 0, 50, 100, 200]
-    const axis = d3.axisBottom(divergeScale)
-      .tickValues(tickVals)
-      .tickFormat(d => `${Math.abs(+d as number)}%`)
-
+    const axis = d3.axisBottom(divergeScale).tickValues(tickVals).tickFormat(d => `${Math.abs(+d as number)}%`)
     legend.selectAll('g.axis').data([null]).join('g')
-      .attr('class','axis')
-      .attr('transform', `translate(0, ${legendH})`)
-      .call(axis as any)
+      .attr('class','axis').attr('transform', `translate(0, ${legendH})`).call(axis as any)
 
-    // legend text UNDER the scale bar
     legend.selectAll('text.legend-label').data([null]).join('text')
       .attr('class','legend-label')
-      .attr('x', legendW/2)
-      .attr('y', legendH + 28)
+      .attr('x', legendW/2).attr('y', legendH + 28)
       .attr('text-anchor','middle')
-      .attr('font-size',12)
-      .attr('fill','#111827')
+      .attr('font-size',12).attr('fill','#111827')
       .text('Percent Δ (symmetric) — 0% at center, fades to white by 200%')
 
-    // direction captions above the ends
     legend.selectAll('text.left-cap').data([null]).join('text')
       .attr('class','left-cap')
-      .attr('x', 0)
-      .attr('y', -6)
+      .attr('x', 0).attr('y', -6)
       .attr('text-anchor','start')
-      .attr('font-size',10)
-      .attr('fill','#111827')
+      .attr('font-size',10).attr('fill','#111827')
       .text('APC > Farebox (blue)')
 
     legend.selectAll('text.right-cap').data([null]).join('text')
       .attr('class','right-cap')
-      .attr('x', legendW)
-      .attr('y', -6)
+      .attr('x', legendW).attr('y', -6)
       .attr('text-anchor','end')
-      .attr('font-size',10)
-      .attr('fill','#111827')
+      .attr('font-size',10).attr('fill','#111827')
       .text('Farebox > APC (red)')
 
   }, [
