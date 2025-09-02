@@ -44,22 +44,26 @@ function mapHeader(obj: Record<string, any>, key: keyof typeof HEADER_MAP) {
 }
 
 export default function App() {
+  // Data state
   const [rawRows, setRawRows] = useState<DataRow[]>([])
   const [days, setDays] = useState<string[]>([])
   const [mode, setMode] = useState<Mode>('daily')
   const [view, setView] = useState<View>('main')
   const [selectedBusId, setSelectedBusId] = useState<string | null>(null)
 
+  // Drilldown
   const [drillBusId, setDrillBusId] = useState<string | null>(null)
 
+  // Slider state (index into "days")
   const [i, setI] = useState(0)
-  const [playing, setPlaying] = useState(false) // ← start paused
+  const [playing, setPlaying] = useState(false) // start paused
 
+  // Date range state (min/max from the loaded CSV)
   const allDates = useMemo(() => Array.from(new Set(rawRows.map(r => r.service_day))).sort(), [rawRows])
   const [startDate, setStartDate] = useState<string | null>(null)
   const [endDate, setEndDate] = useState<string | null>(null)
 
-  // auto-load default CSV on mount (same as before)
+  // Auto-load default CSV on mount
   useEffect(() => {
     let cancelled = false
     async function loadDefault() {
@@ -96,17 +100,20 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Recompute filtered rows + derived days whenever inputs change
   const filteredRows = useMemo(() => {
     if (!startDate || !endDate) return rawRows
     return rawRows.filter(r => r.service_day >= startDate && r.service_day <= endDate)
   }, [rawRows, startDate, endDate])
 
   useEffect(() => {
+    // derive days array from filteredRows
     const uniqueDays = Array.from(new Set(filteredRows.map(r => r.service_day))).sort()
     setDays(uniqueDays)
-    setI(0)
+    setI(0) // reset slider
   }, [filteredRows])
 
+  // Autoplay only in daily + main view
   useEffect(() => {
     if (!playing || mode !== 'daily' || view !== 'main' || days.length === 0) return
     const id = setInterval(() => setI(v => (v + 1) % days.length), 4000)
@@ -115,14 +122,18 @@ export default function App() {
 
   const currentDay = days[i] ?? ''
 
+  // Bus options from filtered rows
   const busOptions = useMemo(
     () => Array.from(new Set(filteredRows.map(r => r.bus_id))).sort((a,b)=>a.localeCompare(b)),
     [filteredRows]
   )
 
+  // CSV loader
   const onPickCsv = useCallback((file: File) => {
     Papa.parse(file, {
-      header: true, skipEmptyLines: true, dynamicTyping: false,
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: false,
       complete: (res) => {
         const out: DataRow[] = []
         for (const row of res.data as any[]) {
@@ -133,14 +144,27 @@ export default function App() {
           const service_day = normalizeDateLike(String(sd ?? ''))
           const bus_id = (bid ?? '').toString().trim()
           if (!service_day || !bus_id) continue
-          out.push({ service_day, bus_id, farebox: parseNumOrNull(fx), apc: parseNumOrNull(ax) })
+          out.push({
+            service_day,
+            bus_id,
+            farebox: parseNumOrNull(fx),
+            apc: parseNumOrNull(ax),
+          })
         }
         out.sort((a,b) => a.service_day.localeCompare(b.service_day) || a.bus_id.localeCompare(b.bus_id))
         setRawRows(out)
+
+        // initialize date range to full span
         const uniqueDates = Array.from(new Set(out.map(r => r.service_day))).sort()
         setStartDate(uniqueDates[0] ?? null)
         setEndDate(uniqueDates[uniqueDates.length - 1] ?? null)
-        setView('main'); setMode('daily'); setSelectedBusId(null); setDrillBusId(null); setI(0)
+
+        // reset UI state
+        setView('main')
+        setMode('daily')
+        setSelectedBusId(null)
+        setDrillBusId(null)
+        setI(0)
       },
       error: (err) => {
         console.error('CSV parse error', err)
@@ -149,14 +173,18 @@ export default function App() {
     })
   }, [])
 
+  // Clicking a monthly bubble opens drilldown
   const handleBusClick = (busId: string) => {
     if (mode !== 'monthly') return
     setDrillBusId(busId)
     setView('drill')
   }
 
-  const handleBack = () => setView('main')
+  const handleBack = () => {
+    setView('main')
+  }
 
+  // Helper: when user changes start/end ensure start<=end
   const setStart = (v: string) => {
     if (endDate && v > endDate) setEndDate(v)
     setStartDate(v)
@@ -168,22 +196,11 @@ export default function App() {
 
   return (
     <div className="page">
-      <header className="toolbar">
+      {/* Ensure header is flex + space-between. If your CSS already does this, the inline style is harmless. */}
+      <header className="toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {/* LEFT side controls */}
         <div className="controls" style={{ gap: 8 }}>
-          <label className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-            Load CSV
-            <input
-              type="file"
-              accept=".csv,text/csv"
-              style={{ display: 'none' }}
-              onChange={e => {
-                const f = e.target.files?.[0]
-                if (f) onPickCsv(f)
-                e.currentTarget.value = ''
-              }}
-            />
-          </label>
-
+          {/* Date range (enabled once data loaded) */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, opacity: rawRows.length ? 1 : 0.5 }}>
             <label style={{ fontSize: 14, color: '#374151' }}>From:&nbsp;
               <input
@@ -219,6 +236,7 @@ export default function App() {
                 {mode === 'daily' ? 'Switch to Monthly' : 'Switch to Daily'}
               </button>
 
+              {/* Bus selector */}
               <label style={{ fontSize: 14, color: '#374151' }}>
                 Bus:&nbsp;
                 <select
@@ -228,7 +246,9 @@ export default function App() {
                   style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid #e5e7eb' }}
                 >
                   <option value="">All buses</option>
-                  {busOptions.map(b => (<option key={b} value={b}>{b}</option>))}
+                  {busOptions.map(b => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
                 </select>
               </label>
 
@@ -256,8 +276,27 @@ export default function App() {
             </>
           )}
         </div>
+
+        {/* RIGHT side: Load CSV */}
+        <div className="controls" style={{ gap: 8 }}>
+          <label className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+            Load CSV
+            <input
+              type="file"
+              accept=".csv,text/csv"
+              style={{ display: 'none' }}
+              onChange={e => {
+                const f = e.target.files?.[0]
+                if (f) onPickCsv(f)
+                // allow re-upload of same file
+                e.currentTarget.value = ''
+              }}
+            />
+          </label>
+        </div>
       </header>
 
+      {/* Body */}
       {rawRows.length === 0 ? (
         <div style={{ padding: 24, color: '#6b7280' }}>
           Loading default data…
@@ -274,7 +313,12 @@ export default function App() {
           height={720}
         />
       ) : (
-        <BusDrilldown data={filteredRows} busId={drillBusId!} width={1100} height={720} />
+        <BusDrilldown
+          data={filteredRows}
+          busId={drillBusId!}
+          width={1100}
+          height={720}
+        />
       )}
 
       <footer className="footer">
