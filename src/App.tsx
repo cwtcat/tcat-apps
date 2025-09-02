@@ -6,12 +6,13 @@ import './styles.css'
 
 type View = 'main' | 'drill'
 
+/** Public path to the default CSV (served by Nginx). Put the file in public/data/default_ridership.csv */
+const DEFAULT_CSV_PATH = '/data/default_ridership.csv'
+
 function normalizeDateLike(s: string): string | null {
   if (!s) return null
-  // Try ISO first
   const isoLike = /^\d{4}-\d{2}-\d{2}$/.test(s.trim())
   if (isoLike) return s.trim()
-  // Otherwise parse and reformat as YYYY-MM-DD
   const d = new Date(s)
   if (isNaN(+d)) return null
   const y = d.getFullYear()
@@ -64,6 +65,66 @@ export default function App() {
   const [startDate, setStartDate] = useState<string | null>(null)
   const [endDate, setEndDate] = useState<string | null>(null)
 
+  // -------- Default CSV loader (on mount) --------
+  // We load the default only if there's no data yet.
+  useEffect(() => {
+    let cancelled = false
+    async function loadDefault() {
+      try {
+        // If user already loaded data, don't overwrite.
+        if (rawRows.length > 0) return
+        const resp = await fetch(DEFAULT_CSV_PATH, { cache: 'no-store' })
+        if (!resp.ok) {
+          console.warn(`Default CSV fetch failed: ${resp.status} ${resp.statusText}`)
+          return
+        }
+        const csvText = await resp.text()
+        const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true })
+        if (parsed.errors?.length) {
+          console.warn('Default CSV parse warnings:', parsed.errors.slice(0, 3))
+        }
+        const out: DataRow[] = []
+        for (const row of (parsed.data as any[])) {
+          const sd = mapHeader(row, 'service_day')
+          const bid = mapHeader(row, 'bus_id')
+          const fx = mapHeader(row, 'farebox')
+          const ax = mapHeader(row, 'apc')
+
+          const service_day = normalizeDateLike(String(sd ?? ''))
+          const bus_id = (bid ?? '').toString().trim()
+          if (!service_day || !bus_id) continue
+
+          out.push({
+            service_day,
+            bus_id,
+            farebox: parseNumOrNull(fx),
+            apc: parseNumOrNull(ax),
+          })
+        }
+        out.sort((a,b) => a.service_day.localeCompare(b.service_day) || a.bus_id.localeCompare(b.bus_id))
+        if (cancelled) return
+
+        setRawRows(out)
+
+        const uniqueDates = Array.from(new Set(out.map(r => r.service_day))).sort()
+        setStartDate(uniqueDates[0] ?? null)
+        setEndDate(uniqueDates[uniqueDates.length - 1] ?? null)
+
+        // reset UI state
+        setView('main')
+        setMode('daily')
+        setSelectedBusId(null)
+        setDrillBusId(null)
+        setI(0)
+      } catch (e) {
+        console.error('Failed to load default CSV:', e)
+      }
+    }
+    loadDefault()
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // run once on mount
+
   // Recompute filtered rows + derived days whenever inputs change
   const filteredRows = useMemo(() => {
     if (!startDate || !endDate) return rawRows
@@ -77,7 +138,7 @@ export default function App() {
     setI(0) // reset slider
   }, [filteredRows])
 
-  // Autoplay only in daily + main view SET DELAY BETWEEN DAYS(4000ms)
+  // Autoplay only in daily + main view (4s)
   useEffect(() => {
     if (!playing || mode !== 'daily' || view !== 'main' || days.length === 0) return
     const id = setInterval(() => setI(v => (v + 1) % days.length), 4000)
@@ -92,7 +153,7 @@ export default function App() {
     [filteredRows]
   )
 
-  // CSV loader
+  // Manual CSV loader (unchanged)
   const onPickCsv = useCallback((file: File) => {
     Papa.parse(file, {
       header: true,
@@ -101,7 +162,6 @@ export default function App() {
       complete: (res) => {
         const out: DataRow[] = []
         for (const row of res.data as any[]) {
-          // Extract with header mapping
           const sd = mapHeader(row, 'service_day')
           const bid = mapHeader(row, 'bus_id')
           const fx = mapHeader(row, 'farebox')
@@ -121,7 +181,6 @@ export default function App() {
         out.sort((a,b) => a.service_day.localeCompare(b.service_day) || a.bus_id.localeCompare(b.bus_id))
         setRawRows(out)
 
-        // initialize date range to full span
         const uniqueDates = Array.from(new Set(out.map(r => r.service_day))).sort()
         setStartDate(uniqueDates[0] ?? null)
         setEndDate(uniqueDates[uniqueDates.length - 1] ?? null)
@@ -165,7 +224,7 @@ export default function App() {
     <div className="page">
       <header className="toolbar">
         <div className="controls" style={{ gap: 8 }}>
-          {/* CSV loader */}
+          {/* CSV loader (still available to override default) */}
           <label className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
             Load CSV
             <input
@@ -175,7 +234,6 @@ export default function App() {
               onChange={e => {
                 const f = e.target.files?.[0]
                 if (f) onPickCsv(f)
-                // allow re-upload of same file
                 e.currentTarget.value = ''
               }}
             />
@@ -247,7 +305,6 @@ export default function App() {
                     onChange={e => setI(parseInt(e.target.value,10))}
                     disabled={!days.length}
                   />
-
                 </>
               )}
             </>
@@ -258,13 +315,12 @@ export default function App() {
             </>
           )}
         </div>
-
       </header>
 
       {/* Body */}
       {rawRows.length === 0 ? (
         <div style={{ padding: 24, color: '#6b7280' }}>
-          Load a CSV to begin. Expected columns: <code>service_day</code>, <code>bus_id</code>, <code>farebox</code>, <code>apc</code>.
+          Loading default data… If this persists, check that <code>{DEFAULT_CSV_PATH}</code> exists in <code>public/</code> and is reachable.
         </div>
       ) : view === 'main' ? (
         <RidershipGapminder
