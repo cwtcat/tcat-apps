@@ -39,13 +39,13 @@ const QMAX = 1.00
 
 // Format ISO "YYYY-MM-DD" -> "Monday, 8/4/25"
 function formatDayBanner(iso: string) {
-  if (!iso) return ''
-  const d = new Date(iso + 'T00:00:00Z')
-  const parts = new Intl.DateTimeFormat('en-US', {
+  if (!iso) return '';
+  // Parse as local date to avoid UTC offset shift
+  const [y, m, d] = iso.split('-').map(Number);
+  const dateObj = new Date(y, m - 1, d); // Local midnight
+  return new Intl.DateTimeFormat('en-US', {
     weekday: 'long', month: 'numeric', day: 'numeric', year: '2-digit'
-  }).formatToParts(d)
-  const get = (t: string) => parts.find(p => p.type === t)?.value ?? ''
-  return `${get('weekday')}, ${get('month')}/${get('day')}/${get('year')}`
+  }).format(dateObj);
 }
 
 // Symmetric percent difference from plotted values
