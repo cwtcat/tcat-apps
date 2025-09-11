@@ -345,38 +345,61 @@ export default function RidershipGapminder({
       return (d.missingApc || d.missingFarebox) ? 1.4 : 0.8
     }
 
-    // Circles
+    // ---------- Circles (named transitions + pointer-events guard) ----------
     const pts = g.selectAll<SVGCircleElement, RowD>('circle.dot')
       .data(rows, (d: any) => d.bus_id)
 
-    const merged = pts.join(
-      enter => enter.append('circle')
-        .attr('class', 'dot')
-        .attr('cx', d => X(d.xPlot))
-        .attr('cy', d => Y(d.yPlot))
-        .attr('r', 0)
-        .attr('fill', d => getSymmetricFill(d, X.domain()[1], Y.domain()[1], rows))
-        .attr('stroke', '#000')
-        .attr('fill-opacity', d => selectedAwareOpacity(d))
-        .attr('stroke-opacity', d => selectedAwareStrokeOpacity(d))
-        .attr('filter', d => selectedAwareFilter(d))
-        .attr('stroke-width', d => highlightedStrokeWidth(d))
-        .style('cursor', mode === 'monthly' ? 'pointer' : 'default')
-        .call(enter => enter.transition().duration(transitionMs).attr('r', d => R(d.sizeMetric))),
-      update => update.call(u => u.transition().duration(transitionMs)
-        .attr('cx', d => X(d.xPlot))
-        .attr('cy', d => Y(d.yPlot))
-        .attr('r', d => R(d.sizeMetric))
-        .attr('fill', d => getSymmetricFill(d, X.domain()[1], Y.domain()[1], rows))
-        .attr('fill-opacity', d => selectedAwareOpacity(d))
-        .attr('stroke-opacity', d => selectedAwareStrokeOpacity(d))
-        .attr('filter', d => selectedAwareFilter(d))
-        .attr('stroke', '#000')
-        .attr('stroke-width', d => highlightedStrokeWidth(d))
-        .style('cursor', mode === 'monthly' ? 'pointer' : 'default')
-      ),
-      exit => exit.call(x => x.transition().duration(150).attr('r', 0).remove())
-    ) as d3.Selection<SVGCircleElement, RowD, SVGGElement, unknown>
+    const enterSel = pts.enter()
+      .append('circle')
+      .attr('class', 'dot')
+      .attr('cx', d => X(d.xPlot))
+      .attr('cy', d => Y(d.yPlot))
+      .attr('r', 0)
+      .attr('fill', d => getSymmetricFill(d, X.domain()[1], Y.domain()[1], rows))
+      .attr('stroke', '#000')
+      .attr('fill-opacity', d => selectedAwareOpacity(d))
+      .attr('stroke-opacity', d => selectedAwareStrokeOpacity(d))
+      .attr('filter', d => selectedAwareFilter(d))
+      .attr('stroke-width', d => highlightedStrokeWidth(d))
+      .style('cursor', mode === 'monthly' ? 'pointer' : 'default')
+
+    // Merge for common ops; block hover while the "move" transition runs
+    const merged = enterSel.merge(pts as any)
+      .style('pointer-events', 'none')
+
+    // Position/size transition uses a NAMED channel: "move"
+    enterSel
+      .transition('move')
+      .duration(transitionMs)
+      .attr('r', d => R(d.sizeMetric))
+
+    merged
+      .transition('move')
+      .duration(transitionMs)
+      .attr('cx', d => X(d.xPlot))
+      .attr('cy', d => Y(d.yPlot))
+      .attr('r', d => R(d.sizeMetric))
+      .attr('fill', d => getSymmetricFill(d, X.domain()[1], Y.domain()[1], rows))
+      .attr('fill-opacity', d => selectedAwareOpacity(d))
+      .attr('stroke-opacity', d => selectedAwareStrokeOpacity(d))
+      .attr('filter', d => selectedAwareFilter(d))
+      .attr('stroke', '#000')
+      .attr('stroke-width', d => highlightedStrokeWidth(d))
+
+    // When the LAST "move" transition finishes, re-enable pointer events
+    merged
+      .transition('move')
+      .on('end', function(_, i, nodes) {
+        if (i !== nodes.length - 1) return
+        d3.selectAll<SVGCircleElement, RowD>('circle.dot')
+          .style('pointer-events', 'auto')
+      })
+
+    pts.exit()
+      .transition('move')
+      .duration(150)
+      .attr('r', 0)
+      .remove()
 
     // ---- Labels (always visible, above each circle) ----
     const labelOpacity = (d: RowD) =>
@@ -396,26 +419,32 @@ export default function RidershipGapminder({
         .attr('opacity', d => labelOpacity(d))
         .text(d => d.bus_id)
         .style('pointer-events', 'none'),
-      update => update.call(u => u.transition().duration(transitionMs)
+      update => update
+        .transition('move') // follow the same "move" timing
+        .duration(transitionMs)
         .attr('x', d => X(d.xPlot))
         .attr('y', d => Y(d.yPlot) - (R(d.sizeMetric) + 4))
-        .attr('opacity', d => labelOpacity(d))
-        .text(d => d.bus_id)
-      ),
+        .attr('opacity', d => labelOpacity(d)),
       exit => exit.remove()
     )
 
-    // Hover interactions (also update label opacity accordingly)
+    // ---------- Hover interactions (STYLE ONLY; never interrupt "move") ----------
     merged
       .on('mouseenter', function (event, d) {
         const busId = d.bus_id
-        merged.interrupt().transition().duration(Math.min(150, transitionMs))
+
+        // Style transitions use a DIFFERENT channel: "style"
+        merged
+          .transition('style')
+          .duration(Math.min(150, transitionMs))
           .attr('fill-opacity', p => (p.bus_id === busId ? 0.9 : 0.08))
           .attr('stroke-opacity', p => (p.bus_id === busId ? 1 : 0.25))
           .attr('stroke-width', p => (p.bus_id === busId ? 2.5 : highlightedStrokeWidth(p)))
           .attr('filter', p => (p.bus_id === busId ? 'url(#glow-yellow)' : selectedAwareFilter(p)))
 
-        labels.interrupt().transition().duration(Math.min(150, transitionMs))
+        labels
+          .transition('style')
+          .duration(Math.min(150, transitionMs))
           .attr('opacity', p => (p.bus_id === busId ? 1 : 0.25))
       })
       .on('mousemove', function (event, d) {
@@ -423,16 +452,16 @@ export default function RidershipGapminder({
         const direction = d.yPlot >= d.xPlot ? 'APC > Farebox' : 'Farebox > APC'
         const html = mode === 'daily'
           ? `<div><b>Bus ${d.bus_id}</b> — ${d.service_day}</div>
-             <div>Farebox: ${d.farebox ?? '—'}</div>
-             <div>APC: ${d.apc ?? '—'}</div>
-             <div>Percent Δ (sym.): ${pDiffPct}%</div>
-             <div style='opacity:.85'>${direction}</div>`
+            <div>Farebox: ${d.farebox ?? '—'}</div>
+            <div>APC: ${d.apc ?? '—'}</div>
+            <div>Percent Δ (sym.): ${pDiffPct}%</div>
+            <div style='opacity:.85'>${direction}</div>`
           : `<div><b>Bus ${d.bus_id}</b> — Monthly Totals</div>
-             <div>Farebox Σ: ${d.farebox}</div>
-             <div>APC Σ: ${d.apc}</div>
-             <div>Percent Δ (sym.): ${pDiffPct}%</div>
-             <div style='opacity:.85'>${direction}</div>
-             <div style='opacity:.8'>Click to drill into daily timeline</div>`
+            <div>Farebox Σ: ${d.farebox}</div>
+            <div>APC Σ: ${d.apc}</div>
+            <div>Percent Δ (sym.): ${pDiffPct}%</div>
+            <div style='opacity:.85'>${direction}</div>
+            <div style='opacity:.8'>Click to drill into daily timeline</div>`
         d3.select(tooltipRef.current)
           .html(html)
           .style('left', (event.offsetX + 18) + 'px')
@@ -440,13 +469,17 @@ export default function RidershipGapminder({
           .style('display', 'block')
       })
       .on('mouseleave', function () {
-        merged.interrupt().transition().duration(Math.min(150, transitionMs))
+        merged
+          .transition('style')
+          .duration(Math.min(150, transitionMs))
           .attr('fill-opacity', d => selectedAwareOpacity(d))
           .attr('stroke-opacity', d => selectedAwareStrokeOpacity(d))
           .attr('stroke-width', d => highlightedStrokeWidth(d))
           .attr('filter', d => selectedAwareFilter(d))
 
-        labels.interrupt().transition().duration(Math.min(150, transitionMs))
+        labels
+          .transition('style')
+          .duration(Math.min(150, transitionMs))
           .attr('opacity', d => labelOpacity(d))
 
         d3.select(tooltipRef.current).style('display', 'none')
@@ -454,6 +487,7 @@ export default function RidershipGapminder({
       .on('click', (_, d) => {
         if (mode === 'monthly' && onBusClick) onBusClick(d.bus_id)
       })
+
 
     // ---------------- DAILY STATS PANEL with hover filters ----------------
     if (mode === 'daily') {
