@@ -344,17 +344,18 @@ export default function RidershipGapminder({
       if (selectedBusId && d.bus_id === selectedBusId) return 2.5
       return (d.missingApc || d.missingFarebox) ? 1.4 : 0.8
     }
-
-    // ---------- Circles (named transitions + pointer-events guard) ----------
+    
+    // ---------- Circles (single named transition + pointer-events guard) ----------
     const pts = g.selectAll<SVGCircleElement, RowD>('circle.dot')
       .data(rows, (d: any) => d.bus_id)
 
+    // ENTER
     const enterSel = pts.enter()
       .append('circle')
       .attr('class', 'dot')
       .attr('cx', d => X(d.xPlot))
       .attr('cy', d => Y(d.yPlot))
-      .attr('r', 0)
+      .attr('r', 0) // start collapsed
       .attr('fill', d => getSymmetricFill(d, X.domain()[1], Y.domain()[1], rows))
       .attr('stroke', '#000')
       .attr('fill-opacity', d => selectedAwareOpacity(d))
@@ -363,17 +364,12 @@ export default function RidershipGapminder({
       .attr('stroke-width', d => highlightedStrokeWidth(d))
       .style('cursor', mode === 'monthly' ? 'pointer' : 'default')
 
-    // Merge for common ops; block hover while the "move" transition runs
+    // MERGE (disable hover while animating)
     const merged = enterSel.merge(pts as any)
       .style('pointer-events', 'none')
 
-    // Position/size transition uses a NAMED channel: "move"
-    enterSel
-      .transition('move')
-      .duration(transitionMs)
-      .attr('r', d => R(d.sizeMetric))
-
-    merged
+    // ONE "move" transition for ALL animated attrs
+    const t = merged
       .transition('move')
       .duration(transitionMs)
       .attr('cx', d => X(d.xPlot))
@@ -386,15 +382,15 @@ export default function RidershipGapminder({
       .attr('stroke', '#000')
       .attr('stroke-width', d => highlightedStrokeWidth(d))
 
-    // When the LAST "move" transition finishes, re-enable pointer events
-    merged
-      .transition('move')
-      .on('end', function(_, i, nodes) {
-        if (i !== nodes.length - 1) return
+    // Re-enable pointer events when the LAST element finishes
+    t.on('end', function(_, i, nodes) {
+      if (i === nodes.length - 1) {
         d3.selectAll<SVGCircleElement, RowD>('circle.dot')
           .style('pointer-events', 'auto')
-      })
+      }
+    })
 
+    // EXIT
     pts.exit()
       .transition('move')
       .duration(150)
@@ -420,13 +416,14 @@ export default function RidershipGapminder({
         .text(d => d.bus_id)
         .style('pointer-events', 'none'),
       update => update
-        .transition('move') // follow the same "move" timing
+        .transition('move') // use the SAME named channel
         .duration(transitionMs)
         .attr('x', d => X(d.xPlot))
         .attr('y', d => Y(d.yPlot) - (R(d.sizeMetric) + 4))
         .attr('opacity', d => labelOpacity(d)),
       exit => exit.remove()
     )
+
 
     // ---------- Hover interactions (STYLE ONLY; never interrupt "move") ----------
     merged
