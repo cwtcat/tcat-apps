@@ -9,8 +9,9 @@ export default function App() {
     <Router>
       <nav style={{ padding: "10px", background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
         <Link to="/" style={{ marginRight: 20 }}>Ridership Gapminder</Link>
-        <Link to="/bar" style={{ marginRight: 20 }}>Stacked Bar Chart  </Link>
-        <Link to="/chart" style={{ marginRight: 20 }}>Ridership Stacked Bar Chart  </Link>        
+        <Link to="/chart" style={{ marginRight: 20 }}>Ridership Stacked Bar Chart  </Link>          
+        <Link to="/bar" style={{ marginRight: 20 }}>Cornell Category Chart (coming soon)  </Link>
+      
       </nav>
       <Routes>
         <Route path="/" element={<MainApp />} />

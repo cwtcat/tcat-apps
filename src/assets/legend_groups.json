@@ -27,24 +27,27 @@
     "ANNUAL PASS"
   ],
   "Ithaca College Riders": [
-"IC Smart Card",
-"Ithaca College Pass",
-"Ithaca College Ride",
-"Third Left Arrow 17"
+    "IC Smart Card",
+    "Ithaca College Pass",
+    "Ithaca College Ride",
+    "Third Left Arrow 17"
   ],
   "Farebox Categories": [
     "RA1 Adult 18-59",
-    "RA2 Senior 60 & Up",
-    "RA3 Disabled",
-    "RA4 Transfer",
+    "RA2  Senior 60 & Up",
+    "RA3  Disabled",
+    "RA4  Transfer",
     "LA1 Youth"
   ],
   "TC3 Riders": [
-    " Fourth Left Arrow 18"
+    "Fourth Left Arrow 18"
  ],
   "Other Descriptions": [
     "TCAT Employee Ride",
     "TompkinsCounty Employee Pass",
-    "NULL"
+    "NULL",
+    "Blank",
+    "Empty TTP",
+    "undefined"
   ]
 }

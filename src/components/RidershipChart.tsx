@@ -50,6 +50,8 @@ export default function RidershipChart() {
       // Initial render (unfiltered = full range)
       renderChart(raw, legendGroups);
     });
+    // === Custom display name overrides for legend & tooltip ===
+
   }, []);
 
   // Re-render when the date inputs change
@@ -118,14 +120,43 @@ export default function RidershipChart() {
     // --- Parse data ---
     const parse = d3.utcParse("%Y-%m-%d");
     const rows: ParsedRow[] = data.map((d) => ({
-      ...d,
-      _date: parse(String(d.date)) as Date,
+    ...d,
+    _date: parse(String(d.date)) as Date,
     }));
 
-    const allKeys = Object.keys(rows[0]).filter(
-      (k) => k !== "date" && k !== "_date"
+    // === Define and apply custom stacking order by group ===
+
+    // 1️⃣ Define your desired display order for groups (bottom → top)
+    const customGroupOrder = [
+    // bottom of the stack
+    "Other Descriptions",
+    "Farebox Categories",  
+    "TC3 Riders",
+    "TCARDs",
+    "Mobile App",
+    "Ithaca College Riders", 
+    "Cornell Riders"       // top of the stack
+    ];
+
+    // 2️⃣ Gather all data keys, excluding date fields
+    let allKeys = Object.keys(rows[0]).filter(
+    (k) => k !== "date" && k !== "_date"
     );
+
+    // 3️⃣ Sort keys based on their group order from legendGroups
+    allKeys = allKeys.sort((a, b) => {
+    const aGroup = Object.entries(legendGroups).find(([_, cats]) => cats.includes(a))?.[0];
+    const bGroup = Object.entries(legendGroups).find(([_, cats]) => cats.includes(b))?.[0];
+
+    const aIdx = customGroupOrder.indexOf(aGroup ?? "");
+    const bIdx = customGroupOrder.indexOf(bGroup ?? "");
+
+    return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
+    });
+
+    // Convert numeric strings to numbers for each key
     rows.forEach((r) => allKeys.forEach((k) => (r[k] = +r[k])));
+
 
     const dates = rows.map((r) => r._date).sort((a, b) => +a - +b);
     const gaps = d3.pairs(dates).map(([a, b]) => +b - +a);
@@ -157,7 +188,7 @@ export default function RidershipChart() {
 
     // === Colors ===
     const groupColorRanges: Record<string, string[]> = {
-      "Cornell Riders": ["#d61a17ff", "#ffa895ff"],
+      "Cornell Riders": ["#d61a17ff", "#f78166ff", "#ffb1a0ff"],
       "Mobile App": ["#d9ead3", "#93c47d", "#38761d"],
       "TCARDs": ["#ead1dc", "#c27ba0", "#741b47"],
       "Ithaca College Riders": ["#0f28e6ff", "#5464d8ff", "#989ecfff"],
@@ -318,22 +349,27 @@ export default function RidershipChart() {
           lastHovered = this as SVGRectElement;
 
           const catKey = (d3.select(this.parentNode).datum() as any).key;
-          const groupName = Object.entries(legendGroups).find(([_, cats]) =>
-            cats.includes(catKey)
-          )?.[0];
+          const groupName =
+          Object.entries(legendGroups).find(([_, cats]) =>
+              cats.some(
+              (c) => c.trim().toLowerCase() === catKey.trim().toLowerCase()
+              )
+          )?.[0] || "Other Descriptions";
           const value = (d.data as any)[catKey];
           const total = d3.sum(activeKeysArray(), (k) => (d.data as any)[k]);
           const borderColor = color(catKey);
 
+          const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
+
           tooltip
-            .style("border-color", borderColor)
-            .style("display", "block")
-            .style("opacity", 1)
-            .html(
+          .style("border-color", borderColor)
+          .style("display", "block")
+          .style("opacity", 1)
+          .html(
               `<strong>${groupName}</strong><br/>
-               ${catKey}: <strong>${value.toLocaleString()}</strong><br/>
-               Total: ${total.toLocaleString()}`
-            );
+              ${catKey}: <strong>${value.toLocaleString()}</strong><br/>
+              <span style="color:#555;">${percentage}% of total ${total.toLocaleString()} shown</span>`
+          );
 
           d3.select(this)
             .attr("stroke", "#000")

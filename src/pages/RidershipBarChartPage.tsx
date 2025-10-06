@@ -19,7 +19,7 @@ const RidershipBarChartPage: React.FC = () => {
 
   return (
     <div style={{ padding: "1rem" }}>
-      <h2>Ridership Stacked Bar Chart</h2>
+      <h2>Cornell Ridership Stacked Bar Chart</h2>
       <RidershipBarChart data={data} />
     </div>
   );
