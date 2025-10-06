@@ -426,93 +426,142 @@ export default function RidershipChart() {
     svg.call(zoom as any);
 
     // === Legend Dropdowns ===
+    // === Compact Sticky Legend Cards (scoped Select/Clear All buttons) ===
     const legendContainer = container
-      .append("div")
-      .attr("class", "legend-dropdowns")
-      .style("margin-top", "12px")
-      .style("max-width", "800px");
+    .append("div")
+    .attr("class", "legend-dropdowns")
+    .style("position", "sticky")
+    .style("top", "100%")
+    .style("z-index", "5")
+    .style("background", "rgba(255,255,255,0.97)")
+    .style("backdrop-filter", "blur(6px)")
+    .style("box-shadow", "0 -6px 12px rgba(0,0,0,0.08)")
+    .style("padding", "6px 10px")
+    .style("border-top", "1px solid #ddd")
+    .style("display", "flex")
+    .style("justify-content", "center")
+    .style("align-items", "flex-start")
+    .style("gap", "8px")
+    .style("flex-wrap", "nowrap")
+    .style("overflow-x", "auto")
+    .style("width", "100%")
+    .style("font-family", "system-ui, sans-serif")
+    .style("font-size", "12px")
+    .style("line-height", "1.25");
 
     Object.entries(legendGroups).forEach(([group, cats]) => {
-      const dropdown = legendContainer
-        .append("details")
-        .attr("class", "legend-group")
-        .attr("open", group === "Fare-Related");
+    const groupBox = legendContainer
+        .append("div")
+        .attr("class", "legend-group-box")
+        .style("border", "1px solid #ddd")
+        .style("border-radius", "5px")
+        .style("padding", "6px 8px")
+        .style("background", "#fafafa")
+        .style("box-shadow", "0 1px 3px rgba(0,0,0,0.04)")
+        .style("display", "inline-flex")
+        .style("flex-direction", "column")
+        .style("align-items", "flex-start")
+        .style("flex", "0 0 auto")
+        .style("min-width", "fit-content");
 
-      dropdown
-        .append("summary")
-        .style("font-weight", "bold")
-        .style("cursor", "pointer")
-        .style("font-size", "16px")
+    // Title
+    groupBox
+        .append("div")
+        .attr("class", "legend-group-title")
+        .style("font-weight", "600")
+        .style("font-size", "12px")
+        .style("margin-bottom", "4px")
+        .style("color", "#222")
         .text(group);
 
-      const controlRow = dropdown
+    // Buttons row
+    const controlRow = groupBox
         .append("div")
-        .style("margin", "4px 0")
         .style("display", "flex")
-        .style("gap", "8px");
+        .style("align-items", "center")
+        .style("gap", "4px")
+        .style("margin-bottom", "4px");
 
-      const list = dropdown
+    // Local selection references
+    const list = groupBox
         .append("div")
         .attr("class", "legend-items")
         .style("display", "flex")
-        .style("flex-wrap", "wrap")
-        .style("gap", "10px")
-        .style("margin-top", "4px");
+        .style("flex-direction", "column")
+        .style("gap", "2px")
+        .style("margin-top", "2px")
+        .style("max-height", "220px")
+        .style("overflow-y", "auto");
 
-      controlRow
-        .append("button")
-        .text("Select All")
-        .attr("type", "button")
-        .style("font-size", "12px")
-        .on("click", () => {
-          cats.forEach((cat) => activeKeys.add(cat));
-          list.selectAll("input").property("checked", true);
-          updateYScale(activeKeysArray(), x);
-          drawBars(activeKeysArray(), x, y);
-        });
-
-      controlRow
+    // --- Clear All (scoped to this card only)
+    controlRow
         .append("button")
         .text("Clear All")
         .attr("type", "button")
-        .style("font-size", "12px")
+        .style("font-size", "10px")
+        .style("border", "1px solid #ccc")
+        .style("border-radius", "4px")
+        .style("padding", "1px 5px")
+        .style("background", "#fff")
+        .style("cursor", "pointer")
         .on("click", () => {
-          cats.forEach((cat) => activeKeys.delete(cat));
-          list.selectAll("input").property("checked", false);
-          updateYScale(activeKeysArray(), x);
-          drawBars(activeKeysArray(), x, y);
+        cats.forEach((cat) => activeKeys.delete(cat));
+        list.selectAll("input").property("checked", false); // ✅ scoped to this group
+        updateYScale(activeKeysArray(), x);
+        drawBars(activeKeysArray(), x, y);
         });
 
-      cats.forEach((cat) => {
+    // --- Select All (scoped to this card only)
+    controlRow
+        .append("button")
+        .text("Select All")
+        .attr("type", "button")
+        .style("font-size", "10px")
+        .style("border", "1px solid #ccc")
+        .style("border-radius", "4px")
+        .style("padding", "1px 5px")
+        .style("background", "#fff")
+        .style("cursor", "pointer")
+        .on("click", () => {
+        cats.forEach((cat) => activeKeys.add(cat));
+        list.selectAll("input").property("checked", true); // ✅ scoped to this group
+        updateYScale(activeKeysArray(), x);
+        drawBars(activeKeysArray(), x, y);
+        });
+
+    // Legend entries stacked vertically
+    cats.forEach((cat) => {
         const item = list
-          .append("label")
-          .attr("class", "legend-item")
-          .style("display", "flex")
-          .style("align-items", "center")
-          .style("cursor", "pointer");
+        .append("label")
+        .attr("class", "legend-item")
+        .style("display", "flex")
+        .style("align-items", "center")
+        .style("cursor", "pointer")
+        .style("font-size", "10.5px");
 
         item
-          .append("input")
-          .attr("type", "checkbox")
-          .attr("checked", activeKeys.has(cat) ? true : null)
-          .style("margin-right", "5px")
-          .on("change", function () {
+        .append("input")
+        .attr("type", "checkbox")
+        .attr("checked", activeKeys.has(cat) ? true : null)
+        .style("margin-right", "3px")
+        .on("change", function () {
             if ((this as HTMLInputElement).checked) activeKeys.add(cat);
             else activeKeys.delete(cat);
             updateYScale(activeKeysArray(), x);
             drawBars(activeKeysArray(), x, y);
-          });
+        });
 
         item
-          .append("span")
-          .style("background-color", color(cat))
-          .style("display", "inline-block")
-          .style("width", "12px")
-          .style("height", "12px")
-          .style("margin-right", "6px");
+        .append("span")
+        .style("background-color", color(cat))
+        .style("display", "inline-block")
+        .style("width", "10px")
+        .style("height", "10px")
+        .style("border-radius", "2px")
+        .style("margin-right", "4px");
 
         item.append("span").text(cat);
-      });
+    });
     });
 
     // --- Top Buttons ---
