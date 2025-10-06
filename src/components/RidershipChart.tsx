@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"; 
+import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import "./ridership_stacked_bar.css";
 
@@ -14,6 +14,14 @@ export default function RidershipChart() {
   const selectAllRef = useRef<HTMLButtonElement | null>(null);
   const clearAllRef = useRef<HTMLButtonElement | null>(null);
 
+  // --- NEW: keep original data & legend in refs, and current date range in state
+  const rawDataRef = useRef<DataRow[] | null>(null);
+  const legendRef = useRef<Record<string, string[]> | null>(null);
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
+    start: "",
+    end: "",
+  });
+
   useEffect(() => {
     Promise.all([
       import("../assets/data.json"),
@@ -21,9 +29,59 @@ export default function RidershipChart() {
     ]).then(([dataModule, legendModule]) => {
       const raw: DataRow[] = dataModule.default;
       const legendGroups: Record<string, string[]> = legendModule.default;
+
+      // Save originals
+      rawDataRef.current = raw;
+      legendRef.current = legendGroups;
+
+      // Initialize date inputs to full file range
+      const parse = d3.utcParse("%Y-%m-%d");
+      const dates = raw
+        .map((d) => parse(String(d.date)) as Date)
+        .filter(Boolean) as Date[];
+      const minDate = d3.min(dates)!;
+      const maxDate = d3.max(dates)!;
+      const fmtISO = d3.utcFormat("%Y-%m-%d");
+
+      setDateRange({ start: fmtISO(minDate), end: fmtISO(maxDate) });
+
+      // Initial render (unfiltered = full range)
       renderChart(raw, legendGroups);
     });
   }, []);
+
+  // Re-render when the date inputs change
+  useEffect(() => {
+    if (!rawDataRef.current || !legendRef.current) return;
+    if (!dateRange.start || !dateRange.end) return;
+
+    const start = new Date(dateRange.start);
+    const end = new Date(dateRange.end);
+
+    // If user flips them, normalize to [min, max]
+    const startDate = start <= end ? start : end;
+    const endDate = start <= end ? end : start;
+
+    // Filter raw data by date range (inclusive)
+    const inRange = rawDataRef.current.filter((d) => {
+      // Compare as UTC dates
+      const dDate = new Date(d.date);
+      return dDate >= startDate && dDate <= endDate;
+    });
+
+    // Guard: if no rows match, don't break renderChart; just show nothing
+    if (inRange.length === 0) {
+      // Clear the SVG (matches your renderChart clearing behavior)
+      if (svgRef.current) {
+        const container = d3.select(svgRef.current.parentNode as HTMLElement);
+        container.selectAll(".legend, .legend-dropdowns, .chart-tooltip").remove();
+        d3.select(svgRef.current).selectAll("*").remove();
+      }
+      return;
+    }
+
+    renderChart(inRange, legendRef.current);
+  }, [dateRange]);
 
   function renderChart(data: DataRow[], legendGroups: Record<string, string[]>) {
     if (!svgRef.current) return;
@@ -37,7 +95,7 @@ export default function RidershipChart() {
     const containerWidth =
       (svgRef.current.parentElement?.clientWidth ?? 1000) - 40;
 
-    // === Tooltip (single, floating) ===
+    // === Tooltip ===
     const tooltip = container
       .append("div")
       .attr("class", "chart-tooltip")
@@ -80,7 +138,7 @@ export default function RidershipChart() {
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom);
 
-    // === ✂️ Clip Path to prevent bars crossing y-axis ===
+    // === Clip Path to prevent bars crossing y-axis ===
     const defs = svg.append("defs");
     defs
       .append("clipPath")
@@ -95,7 +153,7 @@ export default function RidershipChart() {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // === 🎨 Custom Group Color Logic (yours, unchanged) ===
+    // === Colors ===
     const groupColorRanges: Record<string, string[]> = {
       "Cornell Riders": ["#d61a17ff", "#ffa895ff"],
       "Mobile App": ["#d9ead3", "#93c47d", "#38761d"],
@@ -103,7 +161,7 @@ export default function RidershipChart() {
       "Ithaca College Riders": ["#0f28e6ff", "#5464d8ff", "#989ecfff"],
       "Farebox Categories": ["#d08c27ff", "#c59e51ff", "#dfc69bff"],
       "TC3 Riders": ["#4787afff", "#6f9a9aff", "#81a0a1ff"],
-      "Other Descriptions": ["#e6e6e6", "#999999", "#333333"],            
+      "Other Descriptions": ["#e6e6e6", "#999999", "#333333"],
     };
 
     const groupPalettes: Record<string, (t: number) => string> = {};
@@ -147,8 +205,8 @@ export default function RidershipChart() {
 
     const yAxis = g.append("g");
 
-    // Apply clipPath to bars group
-    const barsGroup = g.append("g")
+    const barsGroup = g
+      .append("g")
       .attr("class", "bars-group")
       .attr("clip-path", "url(#chart-clip)");
 
@@ -166,6 +224,7 @@ export default function RidershipChart() {
       keys: string[],
       xScale: d3.ScaleTime<number, number>
     ): number => {
+      if (keys.length === 0) return 1;
       const [xMin, xMax] = xScale.domain();
       let maxVal = 0;
       for (const r of rows) {
@@ -174,7 +233,7 @@ export default function RidershipChart() {
           if (total > maxVal) maxVal = total;
         }
       }
-      return maxVal * 1.1;
+      return maxVal * 1.1 || 1;
     };
 
     const updateYScale = (
@@ -188,33 +247,25 @@ export default function RidershipChart() {
       const axis = d3.axisLeft(y);
       const t = svg.transition().duration(1000).ease(d3.easeCubicInOut);
       animate ? yAxis.transition(t).call(axis) : yAxis.call(axis);
-
-      if (animate) {
-        barsGroup
-          .selectAll<SVGRectElement, any>("rect")
-          .transition(t)
-          .attr("y", (d) => y(d[1]))
-          .attr("height", (d) => y(d[0]) - y(d[1]));
-      } else {
-        barsGroup
-          .selectAll<SVGRectElement, any>("rect")
-          .attr("y", (d) => y(d[1]))
-          .attr("height", (d) => y(d[0]) - y(d[1]));
-      }
     };
 
     // Track last hovered rect
     let lastHovered: SVGRectElement | null = null;
 
-    // --- Draw Bars with clipping ---
+    // --- Draw Bars with consistent rejoin ---
     const drawBars = (
       keys: string[],
       xScale: d3.ScaleTime<number, number>,
       yScale: d3.ScaleLinear<number, number>
     ) => {
-      const stacked = d3.stack<ParsedRow>().keys(keys as any)(rows as any);
+      const stacked =
+        keys.length > 0
+          ? d3.stack<ParsedRow>().keys(keys as any)(rows as any)
+          : [];
+
       const w = barWidthFor(xScale);
 
+      // clean join even when keys empty
       const series = barsGroup
         .selectAll<SVGGElement, d3.Series<ParsedRow, string>>("g.layer")
         .data(stacked, (d: any) => d.key)
@@ -251,11 +302,12 @@ export default function RidershipChart() {
           (exit) => exit.remove()
         );
 
-      // Hide bars that pan left of y-axis
+      // Hide bars left of axis
       rects.attr("display", (d) =>
         xScale((d.data as ParsedRow)._date) - w / 2 < 0 ? "none" : null
       );
 
+      // Tooltip handling
       rects
         .on("mouseenter", function (event, d) {
           if (lastHovered && lastHovered !== this) {
@@ -307,7 +359,7 @@ export default function RidershipChart() {
     yAxis.attr("class", "y-axis").call(d3.axisLeft(y));
     drawBars(allKeys, x, y);
 
-    // --- Zoom Behavior ---
+    // --- Zoom ---
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
       .scaleExtent([1, 8])
@@ -450,51 +502,101 @@ export default function RidershipChart() {
       id="ridership-chart"
       style={{ position: "relative", width: "100%", overflowX: "hidden" }}
     >
+      {/* NEW: Date range controls with styling that matches your buttons */}
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
-          gap: "8px",
+          justifyContent: "space-between",
+          gap: "12px",
           padding: "10px",
+          alignItems: "center",
+          flexWrap: "wrap",
         }}
       >
-        <button
-          ref={clearAllRef}
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span style={{ fontSize: 13, color: "#333" }}>Start Date</span>
+            <input
+              type="date"
+              value={dateRange.start}
+              onChange={(e) =>
+                setDateRange((r) => ({ ...r, start: e.target.value }))
+              }
+              style={{
+                padding: "6px 10px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+                backgroundColor: "#fff",
+                fontSize: "13px",
+              }}
+            />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span style={{ fontSize: 13, color: "#333" }}>End Date</span>
+            <input
+              type="date"
+              value={dateRange.end}
+              onChange={(e) =>
+                setDateRange((r) => ({ ...r, end: e.target.value }))
+              }
+              style={{
+                padding: "6px 10px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+                backgroundColor: "#fff",
+                fontSize: "13px",
+              }}
+            />
+          </label>
+        </div>
+
+        <div
           style={{
-            padding: "6px 10px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-            backgroundColor: "#fff7f7",
-            cursor: "pointer",
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "8px",
+            flexWrap: "wrap",
           }}
         >
-          🚫 Clear All
-        </button>
-        <button
-          ref={selectAllRef}
-          style={{
-            padding: "6px 10px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-            backgroundColor: "#f7fff7",
-            cursor: "pointer",
-          }}
-        >
-          ✅ Select All
-        </button>
-        <button
-          ref={resetRef}
-          style={{
-            padding: "6px 10px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-            backgroundColor: "#f5f5f5",
-            cursor: "pointer",
-          }}
-        >
-          🔄 Reset Zoom
-        </button>
+          <button
+            ref={clearAllRef}
+            style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              backgroundColor: "#fff7f7",
+              cursor: "pointer",
+            }}
+          >
+            🚫 Clear All
+          </button>
+          <button
+            ref={selectAllRef}
+            style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              backgroundColor: "#f7fff7",
+              cursor: "pointer",
+            }}
+          >
+            ✅ Select All
+          </button>
+          <button
+            ref={resetRef}
+            style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              backgroundColor: "#f5f5f5",
+              cursor: "pointer",
+            }}
+          >
+            🔄 Reset Zoom
+          </button>
+        </div>
       </div>
+
       <svg ref={svgRef}></svg>
     </div>
   );
