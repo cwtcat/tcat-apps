@@ -1,0 +1,38 @@
+#ridership-chart {
+  background: #fafafa;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.legend {
+  margin-top: 10px;
+  font-family: sans-serif;
+}
+.legend-item {
+  display: inline-block;
+  margin-right: 12px;
+}
+.legend-dropdowns {
+  border-top: 1px solid #ddd;
+  padding-top: 6px;
+  font-family: sans-serif;
+}
+
+.legend-group summary {
+  list-style: none;
+}
+
+.legend-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.legend-group summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 6px;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.legend-group[open] summary::before {
+  transform: rotate(90deg);
+}
