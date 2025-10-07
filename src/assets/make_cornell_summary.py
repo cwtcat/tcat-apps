@@ -3,8 +3,8 @@ import json
 from pathlib import Path
 
 # === Configurable date range (default: 2025-03-01 to 2025-05-01, UTC aware) ===
-DATE_START = pd.Timestamp("2025-03-01", tz="UTC")
-DATE_END = pd.Timestamp("2025-05-01", tz="UTC")
+DATE_START = pd.Timestamp("2024-07-01", tz="UTC")
+DATE_END = pd.Timestamp("2025-07-01", tz="UTC")
 
 # === Input & output paths ===
 INPUT_CSV = Path("all_riders.csv")
@@ -70,14 +70,20 @@ for chunk in pd.read_csv(
 
     filtered_chunks.append(filtered)
 
-    # Aggregate Cornell-only summary
-    cornell_only = filtered[filtered["description"] == "Cornell Card"]
+    # Aggregate Cornell-only summary with 30-minute time bins
+    cornell_only = filtered[filtered["description"] == "Cornell Card"].copy()  
+    
     if not cornell_only.empty:
+        # Compute half-hour time segments
+        cornell_only["half_hour_label"] = cornell_only["datetime"].dt.floor("30min").dt.strftime("%H:%M")
+
+        # Group by date, parameter, route, and time bin
         grouped = (
-            cornell_only.groupby(["date", "parameter"], as_index=False)
+            cornell_only.groupby(["date", "parameter", "Route", "half_hour_label"], as_index=False)
             .size()
             .rename(columns={"size": "count"})
         )
+
         summary_chunks.append(grouped)
 
 # === Combine and output ===
@@ -95,14 +101,17 @@ print(f"✅ Wrote filtered data ({len(records):,} rows) from {DATE_START.date()}
 # --- Write Cornell summary ---
 if summary_chunks:
     summary_df = pd.concat(summary_chunks, ignore_index=True)
-    summary_df = (
-        summary_df.groupby(["date", "parameter"], as_index=False)["count"]
-        .sum()
-        .sort_values(["date", "parameter"])
+
+    # ✅ Keep half_hour_label column — don't regroup
+    summary_df = summary_df.sort_values(
+        ["date", "parameter", "Route", "half_hour_label"]
     )
+
     summary_records = summary_df.to_dict(orient="records")
+
     with open(SUMMARY_JSON, "w", encoding="utf-8") as f:
         json.dump(summary_records, f, indent=2, ensure_ascii=False, default=str)
+
     print(f"✅ Wrote Cornell summary ({len(summary_records):,} rows) to {SUMMARY_JSON}")
 else:
     print("⚠️ No Cornell Card summary rows were found in this date range.")
