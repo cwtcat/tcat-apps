@@ -1,0 +1,3372 @@
+[
+  {
+    "date": "2025-03-01",
+    "parameter": "",
+    "count": 17
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "AFFILIATE",
+    "count": 6
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "FACULTY/STAFF",
+    "count": 110
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "POST GRADUATE",
+    "count": 72
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "RETIREE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "RETIREE 25",
+    "count": 4
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1863
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 780
+  },
+  {
+    "date": "2025-03-01",
+    "parameter": "TEMP STAFF",
+    "count": 42
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "",
+    "count": 8
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "AFFILIATE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "FACULTY/STAFF",
+    "count": 83
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "POST GRADUATE",
+    "count": 40
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "RETIREE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "RETIREE 25",
+    "count": 2
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1357
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 557
+  },
+  {
+    "date": "2025-03-02",
+    "parameter": "TEMP STAFF",
+    "count": 32
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "",
+    "count": 8
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "AFFILIATE",
+    "count": 30
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "EMERITUS",
+    "count": 3
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "FACULTY/STAFF",
+    "count": 954
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "POST GRADUATE",
+    "count": 302
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "RETIREE",
+    "count": 14
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "RETIREE 25",
+    "count": 10
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3347
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 7
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2085
+  },
+  {
+    "date": "2025-03-03",
+    "parameter": "TEMP STAFF",
+    "count": 156
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "",
+    "count": 8
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "AFFILIATE",
+    "count": 33
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "FACULTY/STAFF",
+    "count": 1111
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "POST GRADUATE",
+    "count": 299
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "RETIREE",
+    "count": 10
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "RETIREE 25",
+    "count": 13
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3561
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 17
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2159
+  },
+  {
+    "date": "2025-03-04",
+    "parameter": "TEMP STAFF",
+    "count": 157
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "",
+    "count": 3
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "AFFILIATE",
+    "count": 37
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "FACULTY/STAFF",
+    "count": 958
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "POST GRADUATE",
+    "count": 263
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "RETIREE",
+    "count": 13
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "RETIREE 25",
+    "count": 5
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3378
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 11
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2052
+  },
+  {
+    "date": "2025-03-05",
+    "parameter": "TEMP STAFF",
+    "count": 119
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "",
+    "count": 19
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "AFFILIATE",
+    "count": 30
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "EXCEPTION",
+    "count": 3
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "FACULTY/STAFF",
+    "count": 1143
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "POST GRADUATE",
+    "count": 316
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "RETIREE",
+    "count": 12
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "RETIREE 25",
+    "count": 10
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 4567
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 16
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2521
+  },
+  {
+    "date": "2025-03-06",
+    "parameter": "TEMP STAFF",
+    "count": 185
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "",
+    "count": 11
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "AFFILIATE",
+    "count": 21
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "FACULTY/STAFF",
+    "count": 1042
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "POST GRADUATE",
+    "count": 346
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "RETIREE",
+    "count": 15
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "RETIREE 25",
+    "count": 11
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 4383
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 10
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2361
+  },
+  {
+    "date": "2025-03-07",
+    "parameter": "TEMP STAFF",
+    "count": 156
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "",
+    "count": 19
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "AFFILIATE",
+    "count": 9
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "FACULTY/STAFF",
+    "count": 162
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "POST GRADUATE",
+    "count": 91
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "RETIREE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "RETIREE 25",
+    "count": 6
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2217
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 3
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 842
+  },
+  {
+    "date": "2025-03-08",
+    "parameter": "TEMP STAFF",
+    "count": 54
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "",
+    "count": 8
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "AFFILIATE",
+    "count": 3
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "FACULTY/STAFF",
+    "count": 111
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "POST GRADUATE",
+    "count": 56
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "RETIREE",
+    "count": 1
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "RETIREE 25",
+    "count": 4
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1120
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 1
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 474
+  },
+  {
+    "date": "2025-03-09",
+    "parameter": "TEMP STAFF",
+    "count": 33
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "",
+    "count": 8
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "AFFILIATE",
+    "count": 37
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "EMERITUS",
+    "count": 7
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "EXCEPTION",
+    "count": 5
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "FACULTY/STAFF",
+    "count": 993
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "POST GRADUATE",
+    "count": 280
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "RETIREE",
+    "count": 15
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "RETIREE 25",
+    "count": 19
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3547
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 8
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2088
+  },
+  {
+    "date": "2025-03-10",
+    "parameter": "TEMP STAFF",
+    "count": 176
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "",
+    "count": 3
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "AFFILIATE",
+    "count": 30
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "FACULTY/STAFF",
+    "count": 1067
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "POST GRADUATE",
+    "count": 316
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "RETIREE",
+    "count": 8
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "RETIREE 25",
+    "count": 10
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3878
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 11
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2482
+  },
+  {
+    "date": "2025-03-11",
+    "parameter": "TEMP STAFF",
+    "count": 153
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "",
+    "count": 9
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "AFFILIATE",
+    "count": 33
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "EMERITUS",
+    "count": 7
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "FACULTY/STAFF",
+    "count": 1193
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "POST GRADUATE",
+    "count": 342
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "RETIREE",
+    "count": 9
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "RETIREE 25",
+    "count": 10
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 4170
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 14
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2573
+  },
+  {
+    "date": "2025-03-12",
+    "parameter": "TEMP STAFF",
+    "count": 175
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "",
+    "count": 5
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "AFFILIATE",
+    "count": 25
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "FACULTY/STAFF",
+    "count": 1095
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "POST GRADUATE",
+    "count": 323
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "RETIREE 25",
+    "count": 20
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3923
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 15
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2401
+  },
+  {
+    "date": "2025-03-13",
+    "parameter": "TEMP STAFF",
+    "count": 153
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "",
+    "count": 9
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "AFFILIATE",
+    "count": 29
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "EMERITUS",
+    "count": 6
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "EXCEPTION",
+    "count": 1
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "FACULTY/STAFF",
+    "count": 819
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "POST GRADUATE",
+    "count": 260
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "RETIREE",
+    "count": 14
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "RETIREE 25",
+    "count": 5
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3641
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 12
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1918
+  },
+  {
+    "date": "2025-03-14",
+    "parameter": "TEMP STAFF",
+    "count": 116
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "",
+    "count": 9
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "AFFILIATE",
+    "count": 9
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "FACULTY/STAFF",
+    "count": 151
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "POST GRADUATE",
+    "count": 82
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "RETIREE",
+    "count": 4
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "RETIREE 25",
+    "count": 8
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2578
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 2
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 928
+  },
+  {
+    "date": "2025-03-15",
+    "parameter": "TEMP STAFF",
+    "count": 47
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "",
+    "count": 1
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "AFFILIATE",
+    "count": 3
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "FACULTY/STAFF",
+    "count": 121
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "POST GRADUATE",
+    "count": 57
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "RETIREE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "RETIREE 25",
+    "count": 9
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1321
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 525
+  },
+  {
+    "date": "2025-03-16",
+    "parameter": "TEMP STAFF",
+    "count": 33
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "",
+    "count": 14
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "AFFILIATE",
+    "count": 25
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "FACULTY/STAFF",
+    "count": 876
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "POST GRADUATE",
+    "count": 277
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "RETIREE",
+    "count": 14
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "RETIREE 25",
+    "count": 5
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2633
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 4
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1795
+  },
+  {
+    "date": "2025-03-17",
+    "parameter": "TEMP STAFF",
+    "count": 117
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "",
+    "count": 5
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "AFFILIATE",
+    "count": 34
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "EXCEPTION",
+    "count": 3
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "FACULTY/STAFF",
+    "count": 938
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "POST GRADUATE",
+    "count": 284
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "RETIREE 25",
+    "count": 9
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3188
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 13
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1955
+  },
+  {
+    "date": "2025-03-18",
+    "parameter": "TEMP STAFF",
+    "count": 138
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "",
+    "count": 4
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "AFFILIATE",
+    "count": 27
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "FACULTY/STAFF",
+    "count": 902
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "POST GRADUATE",
+    "count": 284
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "RETIREE",
+    "count": 15
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "RETIREE 25",
+    "count": 12
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "RTE EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3136
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 7
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1931
+  },
+  {
+    "date": "2025-03-19",
+    "parameter": "TEMP STAFF",
+    "count": 145
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "",
+    "count": 3
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "AFFILIATE",
+    "count": 35
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "EXCEPTION",
+    "count": 3
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "FACULTY/STAFF",
+    "count": 907
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "POST GRADUATE",
+    "count": 281
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "RETIREE",
+    "count": 10
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "RETIREE 25",
+    "count": 19
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3189
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 4
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2112
+  },
+  {
+    "date": "2025-03-20",
+    "parameter": "TEMP STAFF",
+    "count": 160
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "",
+    "count": 7
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "AFFILIATE",
+    "count": 34
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "FACULTY/STAFF",
+    "count": 745
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "POST GRADUATE",
+    "count": 279
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "RETIREE 25",
+    "count": 9
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3775
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 12
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2121
+  },
+  {
+    "date": "2025-03-21",
+    "parameter": "TEMP STAFF",
+    "count": 108
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "",
+    "count": 2
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "AFFILIATE",
+    "count": 4
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "FACULTY/STAFF",
+    "count": 82
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "POST GRADUATE",
+    "count": 34
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "RETIREE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "RETIREE 25",
+    "count": 7
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1379
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 521
+  },
+  {
+    "date": "2025-03-22",
+    "parameter": "TEMP STAFF",
+    "count": 29
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "",
+    "count": 2
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "AFFILIATE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "FACULTY/STAFF",
+    "count": 134
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "POST GRADUATE",
+    "count": 56
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "RETIREE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "RETIREE 25",
+    "count": 4
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1485
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 644
+  },
+  {
+    "date": "2025-03-23",
+    "parameter": "TEMP STAFF",
+    "count": 47
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "",
+    "count": 11
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "AFFILIATE",
+    "count": 37
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "EMERITUS",
+    "count": 6
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "FACULTY/STAFF",
+    "count": 995
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "POST GRADUATE",
+    "count": 313
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "RETIREE",
+    "count": 13
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "RETIREE 25",
+    "count": 9
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "RTE EMERITUS",
+    "count": 3
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3378
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 10
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2132
+  },
+  {
+    "date": "2025-03-24",
+    "parameter": "TEMP STAFF",
+    "count": 175
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "",
+    "count": 7
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "AFFILIATE",
+    "count": 29
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "FACULTY/STAFF",
+    "count": 1021
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "POST GRADUATE",
+    "count": 274
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "RETIREE",
+    "count": 16
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "RETIREE 25",
+    "count": 9
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3384
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 10
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2209
+  },
+  {
+    "date": "2025-03-25",
+    "parameter": "TEMP STAFF",
+    "count": 171
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "",
+    "count": 6
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "AFFILIATE",
+    "count": 36
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "EXCEPTION",
+    "count": 1
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "FACULTY/STAFF",
+    "count": 926
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "POST GRADUATE",
+    "count": 301
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "RETIREE 25",
+    "count": 8
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3725
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 10
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2167
+  },
+  {
+    "date": "2025-03-26",
+    "parameter": "TEMP STAFF",
+    "count": 140
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "",
+    "count": 5
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "AFFILIATE",
+    "count": 40
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "EXCEPTION",
+    "count": 4
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "FACULTY/STAFF",
+    "count": 1013
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "POST GRADUATE",
+    "count": 312
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "RETIREE",
+    "count": 12
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "RETIREE 25",
+    "count": 14
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3685
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 10
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2102
+  },
+  {
+    "date": "2025-03-27",
+    "parameter": "TEMP STAFF",
+    "count": 139
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "",
+    "count": 1
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "AFFILIATE",
+    "count": 39
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "EMERITUS",
+    "count": 3
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "FACULTY/STAFF",
+    "count": 650
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "POST GRADUATE",
+    "count": 249
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "RETIREE",
+    "count": 14
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "RETIREE 25",
+    "count": 10
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "RTE EMERITUS",
+    "count": 3
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2292
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 5
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1266
+  },
+  {
+    "date": "2025-03-28",
+    "parameter": "TEMP STAFF",
+    "count": 119
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "",
+    "count": 2
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "AFFILIATE",
+    "count": 6
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "FACULTY/STAFF",
+    "count": 131
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "POST GRADUATE",
+    "count": 74
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "RETIREE",
+    "count": 3
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "RETIREE 25",
+    "count": 6
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 545
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 280
+  },
+  {
+    "date": "2025-03-29",
+    "parameter": "TEMP STAFF",
+    "count": 47
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "",
+    "count": 1
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "AFFILIATE",
+    "count": 2
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "FACULTY/STAFF",
+    "count": 75
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "POST GRADUATE",
+    "count": 37
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "RETIREE",
+    "count": 1
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "RETIREE 25",
+    "count": 5
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 370
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 189
+  },
+  {
+    "date": "2025-03-30",
+    "parameter": "TEMP STAFF",
+    "count": 30
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "",
+    "count": 1
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "AFFILIATE",
+    "count": 28
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "EMERITUS",
+    "count": 3
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "FACULTY/STAFF",
+    "count": 604
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "POST GRADUATE",
+    "count": 261
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "RETIREE",
+    "count": 8
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "RETIREE 25",
+    "count": 11
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 572
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 2
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 552
+  },
+  {
+    "date": "2025-03-31",
+    "parameter": "TEMP STAFF",
+    "count": 95
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "",
+    "count": 3
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "AFFILIATE",
+    "count": 35
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "EMERITUS",
+    "count": 10
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "FACULTY/STAFF",
+    "count": 569
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "POST GRADUATE",
+    "count": 246
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "RETIREE",
+    "count": 5
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "RETIREE 25",
+    "count": 14
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 558
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 3
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 528
+  },
+  {
+    "date": "2025-04-01",
+    "parameter": "TEMP STAFF",
+    "count": 113
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "",
+    "count": 3
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "AFFILIATE",
+    "count": 33
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "FACULTY/STAFF",
+    "count": 714
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "POST GRADUATE",
+    "count": 281
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "RETIREE",
+    "count": 6
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "RETIREE 25",
+    "count": 15
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 545
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 8
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 553
+  },
+  {
+    "date": "2025-04-02",
+    "parameter": "TEMP STAFF",
+    "count": 110
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "",
+    "count": 3
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "AFFILIATE",
+    "count": 25
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "EMERITUS",
+    "count": 6
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "EXCEPTION",
+    "count": 1
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "FACULTY/STAFF",
+    "count": 605
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "POST GRADUATE",
+    "count": 228
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "RETIREE",
+    "count": 24
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "RETIREE 25",
+    "count": 6
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 585
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 3
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 559
+  },
+  {
+    "date": "2025-04-03",
+    "parameter": "TEMP STAFF",
+    "count": 116
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "AFFILIATE",
+    "count": 30
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "FACULTY/STAFF",
+    "count": 660
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "POST GRADUATE",
+    "count": 295
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "RETIREE",
+    "count": 9
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "RETIREE 25",
+    "count": 16
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 650
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 1
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 591
+  },
+  {
+    "date": "2025-04-04",
+    "parameter": "TEMP STAFF",
+    "count": 107
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "",
+    "count": 3
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "AFFILIATE",
+    "count": 4
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "FACULTY/STAFF",
+    "count": 125
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "POST GRADUATE",
+    "count": 83
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "RETIREE",
+    "count": 4
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "RETIREE 25",
+    "count": 7
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 534
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 309
+  },
+  {
+    "date": "2025-04-05",
+    "parameter": "TEMP STAFF",
+    "count": 42
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "",
+    "count": 6
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "AFFILIATE",
+    "count": 1
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "FACULTY/STAFF",
+    "count": 65
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "POST GRADUATE",
+    "count": 22
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "RETIREE",
+    "count": 1
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "RETIREE 25",
+    "count": 1
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 472
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 208
+  },
+  {
+    "date": "2025-04-06",
+    "parameter": "TEMP STAFF",
+    "count": 26
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "",
+    "count": 6
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "AFFILIATE",
+    "count": 19
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "FACULTY/STAFF",
+    "count": 740
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "POST GRADUATE",
+    "count": 208
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "RETIREE 25",
+    "count": 9
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "RTE EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2312
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 7
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1432
+  },
+  {
+    "date": "2025-04-07",
+    "parameter": "TEMP STAFF",
+    "count": 119
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "",
+    "count": 6
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "AFFILIATE",
+    "count": 38
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "FACULTY/STAFF",
+    "count": 969
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "POST GRADUATE",
+    "count": 276
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "RETIREE 25",
+    "count": 13
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3369
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 15
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2088
+  },
+  {
+    "date": "2025-04-08",
+    "parameter": "TEMP STAFF",
+    "count": 140
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "",
+    "count": 7
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "AFFILIATE",
+    "count": 38
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "FACULTY/STAFF",
+    "count": 980
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "POST GRADUATE",
+    "count": 248
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "RETIREE",
+    "count": 14
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "RETIREE 25",
+    "count": 20
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3253
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 7
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1917
+  },
+  {
+    "date": "2025-04-09",
+    "parameter": "TEMP STAFF",
+    "count": 141
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "",
+    "count": 5
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "AFFILIATE",
+    "count": 38
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "FACULTY/STAFF",
+    "count": 859
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "POST GRADUATE",
+    "count": 304
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "RETIREE 25",
+    "count": 23
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3599
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 7
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2111
+  },
+  {
+    "date": "2025-04-10",
+    "parameter": "TEMP STAFF",
+    "count": 160
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "",
+    "count": 9
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "AFFILIATE",
+    "count": 45
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "FACULTY/STAFF",
+    "count": 937
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "POST GRADUATE",
+    "count": 300
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "RETIREE",
+    "count": 5
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "RETIREE 25",
+    "count": 11
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 4393
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 9
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2137
+  },
+  {
+    "date": "2025-04-11",
+    "parameter": "TEMP STAFF",
+    "count": 146
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "",
+    "count": 10
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "AFFILIATE",
+    "count": 6
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "FACULTY/STAFF",
+    "count": 149
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "POST GRADUATE",
+    "count": 79
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "RETIREE",
+    "count": 1
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "RETIREE 25",
+    "count": 6
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2115
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 815
+  },
+  {
+    "date": "2025-04-12",
+    "parameter": "TEMP STAFF",
+    "count": 73
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "",
+    "count": 1
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "AFFILIATE",
+    "count": 9
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "FACULTY/STAFF",
+    "count": 126
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "POST GRADUATE",
+    "count": 69
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "RETIREE",
+    "count": 3
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "RETIREE 25",
+    "count": 3
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1417
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 595
+  },
+  {
+    "date": "2025-04-13",
+    "parameter": "TEMP STAFF",
+    "count": 44
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "",
+    "count": 8
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "AFFILIATE",
+    "count": 29
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "FACULTY/STAFF",
+    "count": 727
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "POST GRADUATE",
+    "count": 234
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "RETIREE",
+    "count": 8
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "RETIREE 25",
+    "count": 13
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "RTE EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2350
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 4
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1595
+  },
+  {
+    "date": "2025-04-14",
+    "parameter": "TEMP STAFF",
+    "count": 112
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "",
+    "count": 11
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "AFFILIATE",
+    "count": 31
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "EMERITUS",
+    "count": 3
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "FACULTY/STAFF",
+    "count": 840
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "POST GRADUATE",
+    "count": 287
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "RETIREE",
+    "count": 5
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "RETIREE 25",
+    "count": 9
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3227
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 11
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2084
+  },
+  {
+    "date": "2025-04-15",
+    "parameter": "TEMP STAFF",
+    "count": 135
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "",
+    "count": 7
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "AFFILIATE",
+    "count": 34
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "EMERITUS",
+    "count": 4
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "FACULTY/STAFF",
+    "count": 902
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "POST GRADUATE",
+    "count": 286
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "RETIREE",
+    "count": 1
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "RETIREE 25",
+    "count": 6
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "RTE EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3449
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 14
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1953
+  },
+  {
+    "date": "2025-04-16",
+    "parameter": "TEMP STAFF",
+    "count": 129
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "",
+    "count": 6
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "AFFILIATE",
+    "count": 40
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "EMERITUS",
+    "count": 8
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "EXCEPTION",
+    "count": 3
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "FACULTY/STAFF",
+    "count": 907
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "POST GRADUATE",
+    "count": 262
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "RETIREE",
+    "count": 5
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "RETIREE 25",
+    "count": 9
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3378
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 12
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2084
+  },
+  {
+    "date": "2025-04-17",
+    "parameter": "TEMP STAFF",
+    "count": 127
+  },
+  {
+    "date": "2025-04-18",
+    "parameter": "",
+    "count": 1
+  },
+  {
+    "date": "2025-04-18",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 89
+  },
+  {
+    "date": "2025-04-18",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 21
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "",
+    "count": 6
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "AFFILIATE",
+    "count": 5
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "FACULTY/STAFF",
+    "count": 120
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "POST GRADUATE",
+    "count": 71
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "RETIREE",
+    "count": 1
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "RETIREE 25",
+    "count": 3
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1252
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 2
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 558
+  },
+  {
+    "date": "2025-04-20",
+    "parameter": "TEMP STAFF",
+    "count": 43
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "",
+    "count": 4
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "AFFILIATE",
+    "count": 35
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "EMERITUS",
+    "count": 9
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "FACULTY/STAFF",
+    "count": 1012
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "POST GRADUATE",
+    "count": 300
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "RETIREE",
+    "count": 12
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "RETIREE 25",
+    "count": 6
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "RTE EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3482
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 9
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2028
+  },
+  {
+    "date": "2025-04-21",
+    "parameter": "TEMP STAFF",
+    "count": 165
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "",
+    "count": 5
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "AFFILIATE",
+    "count": 31
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "FACULTY/STAFF",
+    "count": 1217
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "POST GRADUATE",
+    "count": 302
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "RETIREE",
+    "count": 9
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "RETIREE 25",
+    "count": 19
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3501
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 10
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2251
+  },
+  {
+    "date": "2025-04-22",
+    "parameter": "TEMP STAFF",
+    "count": 128
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "",
+    "count": 4
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "AFFILIATE",
+    "count": 28
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "FACULTY/STAFF",
+    "count": 904
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "POST GRADUATE",
+    "count": 239
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "RETIREE",
+    "count": 10
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "RETIREE 25",
+    "count": 8
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3012
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 15
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1950
+  },
+  {
+    "date": "2025-04-23",
+    "parameter": "TEMP STAFF",
+    "count": 127
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "",
+    "count": 13
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "AFFILIATE",
+    "count": 34
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "EXCEPTION",
+    "count": 2
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "FACULTY/STAFF",
+    "count": 1090
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "POST GRADUATE",
+    "count": 253
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "RETIREE",
+    "count": 16
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "RETIREE 25",
+    "count": 7
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3558
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 10
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2233
+  },
+  {
+    "date": "2025-04-24",
+    "parameter": "TEMP STAFF",
+    "count": 168
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "",
+    "count": 5
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "AFFILIATE",
+    "count": 41
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "EMERITUS",
+    "count": 5
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "FACULTY/STAFF",
+    "count": 803
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "POST GRADUATE",
+    "count": 260
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "RETIREE 25",
+    "count": 12
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3838
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 6
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 2174
+  },
+  {
+    "date": "2025-04-25",
+    "parameter": "TEMP STAFF",
+    "count": 133
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "",
+    "count": 9
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "AFFILIATE",
+    "count": 7
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "FACULTY/STAFF",
+    "count": 175
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "POST GRADUATE",
+    "count": 99
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "RETIREE",
+    "count": 7
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "RETIREE 25",
+    "count": 4
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2287
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 899
+  },
+  {
+    "date": "2025-04-26",
+    "parameter": "TEMP STAFF",
+    "count": 56
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "",
+    "count": 4
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "AFFILIATE",
+    "count": 5
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "FACULTY/STAFF",
+    "count": 122
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "POST GRADUATE",
+    "count": 70
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "RETIREE",
+    "count": 4
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "RETIREE 25",
+    "count": 6
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 1540
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 1
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 668
+  },
+  {
+    "date": "2025-04-27",
+    "parameter": "TEMP STAFF",
+    "count": 45
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "",
+    "count": 11
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "AFFILIATE",
+    "count": 36
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "EMERITUS",
+    "count": 6
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "EXCEPTION",
+    "count": 1
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "FACULTY/STAFF",
+    "count": 861
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "POST GRADUATE",
+    "count": 272
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "RETIREE",
+    "count": 11
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "RETIREE 25",
+    "count": 18
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "RTE EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2964
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 6
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1977
+  },
+  {
+    "date": "2025-04-28",
+    "parameter": "TEMP STAFF",
+    "count": 126
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "",
+    "count": 9
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "AFFILIATE",
+    "count": 26
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "EMERITUS",
+    "count": 2
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "EXCEPTION",
+    "count": 1
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "FACULTY/STAFF",
+    "count": 749
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "POST GRADUATE",
+    "count": 246
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "RETIREE",
+    "count": 6
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "RETIREE 25",
+    "count": 11
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "RTE EMERITUS",
+    "count": 1
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 2674
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 13
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1676
+  },
+  {
+    "date": "2025-04-29",
+    "parameter": "TEMP STAFF",
+    "count": 118
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "",
+    "count": 3
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "AFFILIATE",
+    "count": 29
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "EMERITUS",
+    "count": 3
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "FACULTY/STAFF",
+    "count": 831
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "POST GRADUATE",
+    "count": 270
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "RETIREE",
+    "count": 10
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "RETIREE 25",
+    "count": 14
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "RTE EMERITUS",
+    "count": 3
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "STUDENT OMNI NEW",
+    "count": 3316
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "STUDENT OMNI PERMIT",
+    "count": 8
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "STUDENT OMNIRIDE",
+    "count": 1966
+  },
+  {
+    "date": "2025-04-30",
+    "parameter": "TEMP STAFF",
+    "count": 125
+  }
+]

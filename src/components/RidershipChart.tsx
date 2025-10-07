@@ -87,7 +87,7 @@ export default function RidershipChart() {
     renderChart(inRange, legendRef.current);
   }, [dateRange]);
 
-  function renderChart(data: DataRow[], legendGroups: Record<string, string[]>) {
+    function renderChart(data: DataRow[], legendGroups: Record<string, string[]>) {
     if (!svgRef.current) return;
 
     const container = d3.select(svgRef.current.parentNode as HTMLElement);
@@ -97,66 +97,62 @@ export default function RidershipChart() {
     svgSel.selectAll("*").remove();
 
     const containerWidth =
-      (svgRef.current.parentElement?.clientWidth ?? 1000) - 40;
+        (svgRef.current.parentElement?.clientWidth ?? 1000) - 40;
 
     // === Tooltip ===
     const tooltip = container
-      .append("div")
-      .attr("class", "chart-tooltip")
-      .style("position", "absolute")
-      .style("pointer-events", "none")
-      .style("background", "rgba(255,255,255,0.97)")
-      .style("border", "2px solid #888")
-      .style("border-radius", "6px")
-      .style("padding", "8px 10px")
-      .style("font-size", "13px")
-      .style("line-height", "1.3em")
-      .style("color", "#111")
-      .style("box-shadow", "0 2px 8px rgba(0,0,0,0.15)")
-      .style("display", "none")
-      .style("opacity", 0)
-      .style("transition", "opacity 0.2s ease-in-out");
+        .append("div")
+        .attr("class", "chart-tooltip")
+        .style("position", "absolute")
+        .style("pointer-events", "none")
+        .style("background", "rgba(255,255,255,0.97)")
+        .style("border", "2px solid #888")
+        .style("border-radius", "6px")
+        .style("padding", "8px 10px")
+        .style("font-size", "13px")
+        .style("line-height", "1.3em")
+        .style("color", "#111")
+        .style("box-shadow", "0 2px 8px rgba(0,0,0,0.15)")
+        .style("display", "none")
+        .style("opacity", 0)
+        .style("transition", "opacity 0.2s ease-in-out");
 
     // --- Parse data ---
     const parse = d3.utcParse("%Y-%m-%d");
     const rows: ParsedRow[] = data.map((d) => ({
-    ...d,
-    _date: parse(String(d.date)) as Date,
+        ...d,
+        _date: parse(String(d.date)) as Date,
     }));
 
-    // === Define and apply custom stacking order by group ===
-
-    // 1️⃣ Define your desired display order for groups (bottom → top)
+    // === Custom stacking order ===
     const customGroupOrder = [
-    // bottom of the stack
-    "Other Descriptions",
-    "Farebox Categories",  
-    "TC3 Riders",
-    "TCARDs",
-    "Mobile App",
-    "Ithaca College Riders", 
-    "Cornell Riders"       // top of the stack
+        "Other Descriptions",
+        "Farebox Categories",
+        "TC3 Riders",
+        "TCARDs",
+        "Mobile App",
+        "Ithaca College Riders",
+        "Cornell Riders",
     ];
 
-    // 2️⃣ Gather all data keys, excluding date fields
     let allKeys = Object.keys(rows[0]).filter(
-    (k) => k !== "date" && k !== "_date"
+        (k) => k !== "date" && k !== "_date"
     );
 
-    // 3️⃣ Sort keys based on their group order from legendGroups
     allKeys = allKeys.sort((a, b) => {
-    const aGroup = Object.entries(legendGroups).find(([_, cats]) => cats.includes(a))?.[0];
-    const bGroup = Object.entries(legendGroups).find(([_, cats]) => cats.includes(b))?.[0];
-
-    const aIdx = customGroupOrder.indexOf(aGroup ?? "");
-    const bIdx = customGroupOrder.indexOf(bGroup ?? "");
-
-    return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
+        const aGroup = Object.entries(legendGroups).find(([_, cats]) =>
+        cats.includes(a)
+        )?.[0];
+        const bGroup = Object.entries(legendGroups).find(([_, cats]) =>
+        cats.includes(b)
+        )?.[0];
+        const aIdx = customGroupOrder.indexOf(aGroup ?? "");
+        const bIdx = customGroupOrder.indexOf(bGroup ?? "");
+        return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
     });
 
-    // Convert numeric strings to numbers for each key
+    // Coerce to numbers
     rows.forEach((r) => allKeys.forEach((k) => (r[k] = +r[k])));
-
 
     const dates = rows.map((r) => r._date).sort((a, b) => +a - +b);
     const gaps = d3.pairs(dates).map(([a, b]) => +b - +a);
@@ -168,38 +164,38 @@ export default function RidershipChart() {
     const height = 400 - margin.top - margin.bottom;
 
     const svg = svgSel
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom);
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
 
-    // === Clip Path to prevent bars crossing y-axis ===
+    // Clip
     const defs = svg.append("defs");
     defs
-      .append("clipPath")
-      .attr("id", "chart-clip")
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", width)
-      .attr("height", height);
+        .append("clipPath")
+        .attr("id", "chart-clip")
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", width)
+        .attr("height", height);
 
     const g = svg
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // === Colors ===
     const groupColorRanges: Record<string, string[]> = {
-      "Cornell Riders": ["#d61a17ff", "#f78166ff", "#ffb1a0ff"],
-      "Mobile App": ["#d9ead3", "#93c47d", "#38761d"],
-      "TCARDs": ["#ead1dc", "#c27ba0", "#741b47"],
-      "Ithaca College Riders": ["#0f28e6ff", "#5464d8ff", "#989ecfff"],
-      "Farebox Categories": ["#d08c27ff", "#c59e51ff", "#dfc69bff"],
-      "TC3 Riders": ["#4787afff", "#6f9a9aff", "#81a0a1ff"],
-      "Other Descriptions": ["#e6e6e6", "#999999", "#333333"],
+        "Cornell Riders": ["#d61a17ff", "#f78166ff", "#ffb1a0ff"],
+        "Mobile App": ["#d9ead3", "#93c47d", "#38761d"],
+        "TCARDs": ["#ead1dc", "#c27ba0", "#741b47"],
+        "Ithaca College Riders": ["#0f28e6ff", "#5464d8ff", "#989ecfff"],
+        "Farebox Categories": ["#d08c27ff", "#c59e51ff", "#dfc69bff"],
+        "TC3 Riders": ["#4787afff", "#6f9a9aff", "#81a0a1ff"],
+        "Other Descriptions": ["#e6e6e6", "#999999", "#333333"],
     };
 
     const groupPalettes: Record<string, (t: number) => string> = {};
     for (const [group, range] of Object.entries(groupColorRanges)) {
-      groupPalettes[group] = d3
+        groupPalettes[group] = d3
         .scaleLinear<string>()
         .domain(range.map((_, i) => i / (range.length - 1)))
         .range(range)
@@ -209,12 +205,12 @@ export default function RidershipChart() {
 
     const colorMap = new Map<string, string>();
     Object.entries(legendGroups).forEach(([group, cats]) => {
-      const interp = groupPalettes[group] || d3.interpolateViridis;
-      const n = cats.length;
-      cats.forEach((cat, i) => {
+        const interp = groupPalettes[group] || d3.interpolateViridis;
+        const n = cats.length;
+        cats.forEach((cat, i) => {
         const t = 0.25 + (0.6 * i) / Math.max(1, n - 1);
         colorMap.set(cat, interp(t));
-      });
+        });
     });
     const color = (key: string) => colorMap.get(key) || "#999";
 
@@ -222,173 +218,208 @@ export default function RidershipChart() {
 
     // --- Scales ---
     const x = d3
-      .scaleUtc()
-      .domain(d3.extent(rows, (r) => r._date) as [Date, Date])
-      .range([0, width]);
+        .scaleUtc()
+        .domain(d3.extent(rows, (r) => r._date) as [Date, Date])
+        .range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
 
     const xAxis = g
-      .append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x).tickFormat(fmt));
+        .append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x).tickFormat(fmt));
     xAxis
-      .selectAll("text")
-      .attr("transform", "rotate(-45)")
-      .style("text-anchor", "end");
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
 
     const yAxis = g.append("g");
 
-    const barsGroup = g
-      .append("g")
-      .attr("class", "bars-group")
-      .attr("clip-path", "url(#chart-clip)");
+    // === Animated Total Label (top-right) ===
+    const totalLabel = g
+        .append("text")
+        .attr("class", "total-visible-label")
+        .attr("x", width - 10)
+        .attr("y", -10)
+        .attr("text-anchor", "end")
+        .style("font-size", "14px")
+        .style("font-weight", "600")
+        .style("fill", "#333")
+        .style("pointer-events", "none");
 
-    // --- Helpers ---
-    const barWidthFor = (sx: d3.ScaleTime<number, number>) => {
-      const d0 = dates[0];
-      const d1 = new Date(+d0 + stepMs);
-      return Math.max(1, (sx(d1) - sx(d0)) * 0.9);
-    };
+    let currentTotal = 0;
 
     const activeKeys = new Set(allKeys);
     const activeKeysArray = () => Array.from(activeKeys);
 
+    // Helpers
+    const barWidthFor = (sx: d3.ScaleTime<number, number>) => {
+        const d0 = dates[0];
+        const d1 = new Date(+d0 + stepMs);
+        return Math.max(1, (sx(d1) - sx(d0)) * 0.9);
+    };
+
     const computeVisibleMax = (
-      keys: string[],
-      xScale: d3.ScaleTime<number, number>
-    ): number => {
-      if (keys.length === 0) return 1;
-      const [xMin, xMax] = xScale.domain();
-      let maxVal = 0;
-      for (const r of rows) {
-        if (r._date >= xMin && r._date <= xMax) {
-          const total = d3.sum(keys, (k) => r[k] as number);
-          if (total > maxVal) maxVal = total;
-        }
-      }
-      return maxVal * 1.1 || 1;
-    };
-
-    const updateYScale = (
-      keys: string[],
-      xScale: d3.ScaleTime<number, number>,
-      animate = true
+        keys: string[],
+        xScale: d3.ScaleTime<number, number>
     ) => {
-      const visibleMax = computeVisibleMax(keys, xScale);
-      const newDomain = [0, visibleMax];
-      y.domain(newDomain);
-      const axis = d3.axisLeft(y);
-      const t = svg.transition().duration(1000).ease(d3.easeCubicInOut);
-      animate ? yAxis.transition(t).call(axis) : yAxis.call(axis);
+        if (keys.length === 0) return 1;
+        const [xMin, xMax] = xScale.domain();
+        let maxVal = 0;
+        for (const r of rows) {
+        if (r._date >= xMin && r._date <= xMax) {
+            const total = d3.sum(keys, (k) => r[k] as number);
+            if (total > maxVal) maxVal = total;
+        }
+        }
+        return maxVal * 1.1 || 1;
     };
 
-    // Track last hovered rect
+    function computeVisibleTotal(
+        keys: string[],
+        xScale: d3.ScaleTime<number, number>
+    ) {
+        if (keys.length === 0) return 0;
+        const [xMin, xMax] = xScale.domain();
+        let totalSum = 0;
+        for (const r of rows) {
+        if (r._date >= xMin && r._date <= xMax) {
+            totalSum += d3.sum(keys, (k) => r[k] as number);
+        }
+        }
+        return totalSum;
+    }
+
+    function animateTotal(newValue: number) {
+        const interp = d3.interpolateNumber(currentTotal, newValue);
+        const duration = 800;
+        const ease = d3.easeCubicOut;
+        const t = svg.transition().duration(duration).ease(ease);
+        t.tween("text", () => (time) => {
+        const val = interp(time);
+        totalLabel.text(`Total: ${d3.format(",")(Math.round(val))}`);
+        });
+        currentTotal = newValue;
+    }
+
+    // Helper: get current x scale (respect zoom)
+    const currentX = () =>
+        (d3.zoomTransform(svg.node() as any) as any).rescaleX(x);
+
+    const barsGroup = g
+        .append("g")
+        .attr("class", "bars-group")
+        .attr("clip-path", "url(#chart-clip)");
+
+    // --- Draw Bars ---
+    // Track last hovered rect for tooltip highlight
     let lastHovered: SVGRectElement | null = null;
 
-    // --- Draw Bars with consistent rejoin ---
     const drawBars = (
-      keys: string[],
-      xScale: d3.ScaleTime<number, number>,
-      yScale: d3.ScaleLinear<number, number>
+        keys: string[],
+        xScale: d3.ScaleTime<number, number>,
+        yScale: d3.ScaleLinear<number, number>
     ) => {
-      const stacked =
+        const stacked =
         keys.length > 0
-          ? d3.stack<ParsedRow>().keys(keys as any)(rows as any)
-          : [];
+            ? d3.stack<ParsedRow>().keys(keys as any)(rows as any)
+            : [];
 
-      const w = barWidthFor(xScale);
+        const w = barWidthFor(xScale);
 
-      // clean join even when keys empty
-      const series = barsGroup
+        const series = barsGroup
         .selectAll<SVGGElement, d3.Series<ParsedRow, string>>("g.layer")
         .data(stacked, (d: any) => d.key)
         .join(
-          (enter) =>
+            (enter) =>
             enter
-              .append("g")
-              .attr("class", "layer")
-              .attr("fill", (d) => color(d.key)),
-          (update) => update.attr("fill", (d) => color(d.key)),
-          (exit) => exit.remove()
+                .append("g")
+                .attr("class", "layer")
+                .attr("fill", (d) => color(d.key)),
+            (update) => update.attr("fill", (d) => color(d.key)),
+            (exit) => exit.remove()
         );
 
-      const rects = series
+        const rects = series
         .selectAll<SVGRectElement, d3.SeriesPoint<ParsedRow>>("rect")
         .data(
-          (d) => d,
-          (d: any) => (d.data as ParsedRow)._date.getTime()
+            (d) => d,
+            (d: any) => (d.data as ParsedRow)._date.getTime()
         )
         .join(
-          (enter) =>
+            (enter) =>
             enter
-              .append("rect")
-              .attr("x", (d) => xScale((d.data as ParsedRow)._date) - w / 2)
-              .attr("width", w)
-              .attr("y", (d) => yScale(d[1]))
-              .attr("height", (d) => yScale(d[0]) - yScale(d[1])),
-          (update) =>
+                .append("rect")
+                .attr("x", (d) => xScale((d.data as ParsedRow)._date) - w / 2)
+                .attr("width", w)
+                .attr("y", (d) => yScale(d[1]))
+                .attr("height", (d) => yScale(d[0]) - yScale(d[1])),
+            (update) =>
             update
-              .attr("width", w)
-              .attr("x", (d) => xScale((d.data as ParsedRow)._date) - w / 2)
-              .attr("y", (d) => yScale(d[1]))
-              .attr("height", (d) => yScale(d[0]) - yScale(d[1])),
-          (exit) => exit.remove()
+                .attr("width", w)
+                .attr("x", (d) => xScale((d.data as ParsedRow)._date) - w / 2)
+                .attr("y", (d) => yScale(d[1]))
+                .attr("height", (d) => yScale(d[0]) - yScale(d[1])),
+            (exit) => exit.remove()
         );
 
-      // Hide bars left of axis
-      rects.attr("display", (d) =>
+        // Hide bars left of y-axis
+        rects.attr("display", (d) =>
         xScale((d.data as ParsedRow)._date) - w / 2 < 0 ? "none" : null
-      );
+        );
 
-      // Tooltip handling
-      rects
+        // Tooltip interactions
+        rects
         .on("mouseenter", function (event, d) {
-          if (lastHovered && lastHovered !== this) {
+            if (lastHovered && lastHovered !== this) {
             d3.select(lastHovered).attr("stroke", null).attr("opacity", 1);
-          }
-          lastHovered = this as SVGRectElement;
+            }
+            lastHovered = this as SVGRectElement;
 
-          const catKey = (d3.select(this.parentNode).datum() as any).key;
-          const groupName =
-          Object.entries(legendGroups).find(([_, cats]) =>
-              cats.some(
-              (c) => c.trim().toLowerCase() === catKey.trim().toLowerCase()
-              )
-          )?.[0] || "Other Descriptions";
-          const value = (d.data as any)[catKey];
-          const total = d3.sum(activeKeysArray(), (k) => (d.data as any)[k]);
-          const borderColor = color(catKey);
+            const catKey = (d3.select(this.parentNode).datum() as any).key;
+            const groupName =
+            Object.entries(legendGroups).find(([_, cats]) =>
+                cats.some(
+                (c) => c.trim().toLowerCase() === catKey.trim().toLowerCase()
+                )
+            )?.[0] || "Other Descriptions";
 
-          const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
+            const value = (d.data as any)[catKey];
+            const rowTotal = d3.sum(activeKeysArray(), (k) => (d.data as any)[k]);
+            const percentage = rowTotal > 0 ? ((value / rowTotal) * 100).toFixed(1) : "0.0";
+            const borderColor = color(catKey);
 
-          tooltip
-          .style("border-color", borderColor)
-          .style("display", "block")
-          .style("opacity", 1)
-          .html(
-              `<strong>${groupName}</strong><br/>
-              ${catKey}: <strong>${value.toLocaleString()}</strong><br/>
-              <span style="color:#555;">${percentage}% of total ${total.toLocaleString()} shown</span>`
-          );
+            tooltip
+            .style("border-color", borderColor)
+            .style("display", "block")
+            .style("opacity", 1)
+            .html(
+                `<strong>${groupName}</strong><br/>
+                ${catKey}: <strong>${value.toLocaleString()}</strong><br/>
+                <span style="color:#555;">${percentage}% of total ${rowTotal.toLocaleString()} shown</span>`
+            );
 
-          d3.select(this)
+            d3.select(this)
             .attr("stroke", "#000")
             .attr("stroke-width", 1.2)
             .attr("opacity", 0.88);
         })
         .on("mousemove", function (event) {
-          tooltip
+            tooltip
             .style("left", `${event.pageX + 12}px`)
             .style("top", `${event.pageY - 28}px`);
         });
 
-      barsGroup.on("mouseleave", () => {
+        barsGroup.on("mouseleave", () => {
         tooltip.style("opacity", 0).style("display", "none");
         if (lastHovered) {
-          d3.select(lastHovered).attr("stroke", null).attr("opacity", 1);
-          lastHovered = null;
+            d3.select(lastHovered).attr("stroke", null).attr("opacity", 1);
+            lastHovered = null;
         }
-      });
+        });
+
+        // 🔢 Update animated total whenever bars change
+        const newTotal = computeVisibleTotal(keys, xScale);
+        animateTotal(newTotal);
     };
 
     // --- Initial Draw ---
@@ -399,17 +430,17 @@ export default function RidershipChart() {
 
     // --- Zoom ---
     const zoom = d3
-      .zoom<SVGSVGElement, unknown>()
-      .scaleExtent([1, 8])
-      .translateExtent([
+        .zoom<SVGSVGElement, unknown>()
+        .scaleExtent([1, 8])
+        .translateExtent([
         [0, 0],
         [width, height],
-      ])
-      .extent([
+        ])
+        .extent([
         [0, 0],
         [width, height],
-      ])
-      .on("zoom", (event) => {
+        ])
+        .on("zoom", (event) => {
         const t = event.transform;
         const zx = t.rescaleX(x);
         const visibleMax = computeVisibleMax(activeKeysArray(), zx);
@@ -417,40 +448,39 @@ export default function RidershipChart() {
         yAxis.call(d3.axisLeft(y));
         drawBars(activeKeysArray(), zx, y);
         xAxis
-          .call(d3.axisBottom(zx).tickFormat(d3.utcFormat("%-m/%-d")))
-          .selectAll("text")
-          .attr("transform", "rotate(-45)")
-          .style("text-anchor", "end");
-      });
+            .call(d3.axisBottom(zx).tickFormat(d3.utcFormat("%-m/%-d")))
+            .selectAll("text")
+            .attr("transform", "rotate(-45)")
+            .style("text-anchor", "end");
+        });
 
     svg.call(zoom as any);
 
-    // === Legend Dropdowns ===
-    // === Compact Sticky Legend Cards (scoped Select/Clear All buttons) ===
+    // === Legend Cards (scoped buttons, vertical items) ===
     const legendContainer = container
-    .append("div")
-    .attr("class", "legend-dropdowns")
-    .style("position", "sticky")
-    .style("top", "100%")
-    .style("z-index", "5")
-    .style("background", "rgba(255,255,255,0.97)")
-    .style("backdrop-filter", "blur(6px)")
-    .style("box-shadow", "0 -6px 12px rgba(0,0,0,0.08)")
-    .style("padding", "6px 10px")
-    .style("border-top", "1px solid #ddd")
-    .style("display", "flex")
-    .style("justify-content", "center")
-    .style("align-items", "flex-start")
-    .style("gap", "8px")
-    .style("flex-wrap", "nowrap")
-    .style("overflow-x", "auto")
-    .style("width", "100%")
-    .style("font-family", "system-ui, sans-serif")
-    .style("font-size", "12px")
-    .style("line-height", "1.25");
+        .append("div")
+        .attr("class", "legend-dropdowns")
+        .style("position", "sticky")
+        .style("top", "100%")
+        .style("z-index", "5")
+        .style("background", "rgba(255,255,255,0.97)")
+        .style("backdrop-filter", "blur(6px)")
+        .style("box-shadow", "0 -6px 12px rgba(0,0,0,0.08)")
+        .style("padding", "6px 10px")
+        .style("border-top", "1px solid #ddd")
+        .style("display", "flex")
+        .style("justify-content", "center")
+        .style("align-items", "flex-start")
+        .style("gap", "8px")
+        .style("flex-wrap", "nowrap")
+        .style("overflow-x", "auto")
+        .style("width", "100%")
+        .style("font-family", "system-ui, sans-serif")
+        .style("font-size", "12px")
+        .style("line-height", "1.25");
 
     Object.entries(legendGroups).forEach(([group, cats]) => {
-    const groupBox = legendContainer
+        const groupBox = legendContainer
         .append("div")
         .attr("class", "legend-group-box")
         .style("border", "1px solid #ddd")
@@ -464,8 +494,8 @@ export default function RidershipChart() {
         .style("flex", "0 0 auto")
         .style("min-width", "fit-content");
 
-    // Title
-    groupBox
+        // Title
+        groupBox
         .append("div")
         .attr("class", "legend-group-title")
         .style("font-weight", "600")
@@ -474,16 +504,16 @@ export default function RidershipChart() {
         .style("color", "#222")
         .text(group);
 
-    // Buttons row
-    const controlRow = groupBox
+        // Buttons row
+        const controlRow = groupBox
         .append("div")
         .style("display", "flex")
         .style("align-items", "center")
         .style("gap", "4px")
         .style("margin-bottom", "4px");
 
-    // Local selection references
-    const list = groupBox
+        // Local list (for scoped checkbox updates)
+        const list = groupBox
         .append("div")
         .attr("class", "legend-items")
         .style("display", "flex")
@@ -493,8 +523,8 @@ export default function RidershipChart() {
         .style("max-height", "220px")
         .style("overflow-y", "auto");
 
-    // --- Clear All (scoped to this card only)
-    controlRow
+        // Clear All (scoped)
+        controlRow
         .append("button")
         .text("Clear All")
         .attr("type", "button")
@@ -505,14 +535,17 @@ export default function RidershipChart() {
         .style("background", "#fff")
         .style("cursor", "pointer")
         .on("click", () => {
-        cats.forEach((cat) => activeKeys.delete(cat));
-        list.selectAll("input").property("checked", false); // ✅ scoped to this group
-        updateYScale(activeKeysArray(), x);
-        drawBars(activeKeysArray(), x, y);
+            cats.forEach((cat) => activeKeys.delete(cat));
+            // Respect current zoom
+            const zx = currentX();
+            list.selectAll("input").property("checked", false);
+            y.domain([0, computeVisibleMax(activeKeysArray(), zx)]);
+            yAxis.call(d3.axisLeft(y));
+            drawBars(activeKeysArray(), zx, y);
         });
 
-    // --- Select All (scoped to this card only)
-    controlRow
+        // Select All (scoped)
+        controlRow
         .append("button")
         .text("Select All")
         .attr("type", "button")
@@ -523,66 +556,74 @@ export default function RidershipChart() {
         .style("background", "#fff")
         .style("cursor", "pointer")
         .on("click", () => {
-        cats.forEach((cat) => activeKeys.add(cat));
-        list.selectAll("input").property("checked", true); // ✅ scoped to this group
-        updateYScale(activeKeysArray(), x);
-        drawBars(activeKeysArray(), x, y);
+            cats.forEach((cat) => activeKeys.add(cat));
+            const zx = currentX();
+            list.selectAll("input").property("checked", true);
+            y.domain([0, computeVisibleMax(activeKeysArray(), zx)]);
+            yAxis.call(d3.axisLeft(y));
+            drawBars(activeKeysArray(), zx, y);
         });
 
-    // Legend entries stacked vertically
-    cats.forEach((cat) => {
+        // Legend entries (vertical)
+        cats.forEach((cat) => {
         const item = list
-        .append("label")
-        .attr("class", "legend-item")
-        .style("display", "flex")
-        .style("align-items", "center")
-        .style("cursor", "pointer")
-        .style("font-size", "10.5px");
+            .append("label")
+            .attr("class", "legend-item")
+            .style("display", "flex")
+            .style("align-items", "center")
+            .style("cursor", "pointer")
+            .style("font-size", "10.5px");
 
         item
-        .append("input")
-        .attr("type", "checkbox")
-        .attr("checked", activeKeys.has(cat) ? true : null)
-        .style("margin-right", "3px")
-        .on("change", function () {
+            .append("input")
+            .attr("type", "checkbox")
+            .attr("checked", activeKeys.has(cat) ? true : null)
+            .style("margin-right", "3px")
+            .on("change", function () {
+            const zx = currentX();
             if ((this as HTMLInputElement).checked) activeKeys.add(cat);
             else activeKeys.delete(cat);
-            updateYScale(activeKeysArray(), x);
-            drawBars(activeKeysArray(), x, y);
-        });
+            y.domain([0, computeVisibleMax(activeKeysArray(), zx)]);
+            yAxis.call(d3.axisLeft(y));
+            drawBars(activeKeysArray(), zx, y);
+            });
 
         item
-        .append("span")
-        .style("background-color", color(cat))
-        .style("display", "inline-block")
-        .style("width", "10px")
-        .style("height", "10px")
-        .style("border-radius", "2px")
-        .style("margin-right", "4px");
+            .append("span")
+            .style("background-color", color(cat))
+            .style("display", "inline-block")
+            .style("width", "10px")
+            .style("height", "10px")
+            .style("border-radius", "2px")
+            .style("margin-right", "4px");
 
         item.append("span").text(cat);
-    });
+        });
     });
 
     // --- Top Buttons ---
     d3.select(resetRef.current).on("click", () => {
-      svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity);
+        svg.transition().duration(600).call(zoom.transform, d3.zoomIdentity);
     });
 
     d3.select(clearAllRef.current).on("click", () => {
-      activeKeys.clear();
-      legendContainer.selectAll("input").property("checked", false);
-      updateYScale(activeKeysArray(), x);
-      drawBars([], x, y);
+        activeKeys.clear();
+        legendContainer.selectAll("input").property("checked", false);
+        const zx = currentX();
+        y.domain([0, computeVisibleMax(activeKeysArray(), zx)]);
+        yAxis.call(d3.axisLeft(y));
+        drawBars([], zx, y);
     });
 
     d3.select(selectAllRef.current).on("click", () => {
-      allKeys.forEach((k) => activeKeys.add(k));
-      legendContainer.selectAll("input").property("checked", true);
-      updateYScale(activeKeysArray(), x);
-      drawBars(allKeys, x, y);
+        allKeys.forEach((k) => activeKeys.add(k));
+        legendContainer.selectAll("input").property("checked", true);
+        const zx = currentX();
+        y.domain([0, computeVisibleMax(activeKeysArray(), zx)]);
+        yAxis.call(d3.axisLeft(y));
+        drawBars(allKeys, zx, y);
     });
-  }
+    }
 
   return (
     <div

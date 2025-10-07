@@ -1,0 +1,20 @@
+{
+  "Students": [
+    "STUDENT OMNI NEW",
+    "STUDENT OMNIRIDE",    
+    "POST GRADUATE",
+    "STUDENT OMNI PERMIT"
+  ],
+  "Faculty and Staff": [
+    "FACULTY/STAFF",
+    "TEMP STAFF",
+    "EXCEPTION"
+  ],
+  "Other": [
+    "RETIREE",
+    "RETIREE 25",
+    "RTE EMERITUS",
+    "EMERITUS",
+    "AFFILIATE"
+    ]
+}
