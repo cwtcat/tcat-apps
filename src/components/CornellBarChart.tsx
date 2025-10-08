@@ -16,34 +16,92 @@ export default function CornellBarChart() {
     end: "",
   });
 
-  // === Load data + legend ===
+  // load data + legend
   useEffect(() => {
-    Promise.all([
-      fetch("/assets/cornell_filtered.json").then((r) => r.json()),
-      import("../assets/cu_legend_groups.json"),
-    ])
-      .then(([raw, legendModule]) => {
-        const legendGroups = legendModule.default;
-        // Preserve the group and category order exactly as defined in the JSON
-        const orderedLegendGroups = Object.entries(legendGroups);        
+    async function loadData() {
+      try {
+        // === Load both files dynamically at runtime ===
+        const [dataResp, legendResp] = await Promise.all([
+          fetch("/assets/cornell_filtered_02.json").catch(() =>
+            fetch("/assets/data_02.jsonl")
+          ),
+          fetch("/assets/cu_legend_groups.json"),
+        ]);
+
+        if (!dataResp.ok || !legendResp.ok) {
+          console.error("❌ Failed to fetch data or legend_groups");
+          return;
+        }
+
+        // --- Determine if it's JSON or JSONL ---
+        const contentType = dataResp.headers.get("content-type") || "";
+        const isJsonl =
+          dataResp.url.endsWith(".jsonl") ||
+          contentType.includes("text/plain") ||
+          contentType.includes("application/x-ndjson");
+
+        let raw: any[] = [];
+
+        if (isJsonl) {
+          // --- Parse JSONL incrementally ---
+          const text = await dataResp.text();
+          raw = text
+            .trim()
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => JSON.parse(line));
+        } else {
+          raw = await dataResp.json();
+        }
+
+        // ✅ Convert all date strings → Date objects
+        raw.forEach((r) => {
+          if (r.date && typeof r.date === "string") {
+            const d = new Date(r.date);
+            if (!isNaN(d.getTime())) r.date = d;
+          }
+        });
+
+        // ✅ Ensure we have valid Date objects for range calc
+        const validDates = raw
+          .map((r) => (r.date instanceof Date ? r.date : new Date(r.date)))
+          .filter((d) => !isNaN(d.getTime()));
+
+        if (validDates.length === 0) {
+          console.error("❌ No valid dates found in dataset");
+          return;
+        }
+
+        const minDate = d3.min(validDates)!;
+        const maxDate = d3.max(validDates)!;
+
+        // ✅ Format to yyyy-MM-dd for <input type="date">
+        const fmt = (d: Date) => d.toISOString().slice(0, 10);
+
+        console.log(
+          `📅 Loaded ${raw.length} rows. Date range: ${fmt(minDate)} → ${fmt(maxDate)}`
+        );
+
+        const legendGroups: Record<string, string[]> = await legendResp.json();
+
+        // Save originals
         rawDataRef.current = raw;
         legendRef.current = legendGroups;
 
-        raw.forEach((d) => {
-          const parsed = new Date(d.time || d.timestamp);
-          if (!isNaN(parsed)) d.date = parsed;
-        });
+        // Initialize date inputs to full file range
+        setDateRange({ start: fmt(minDate), end: fmt(maxDate) });
 
-        const dates = raw.map((d) => d.date).filter(Boolean);
-        const minDate = d3.min(dates);
-        const maxDate = d3.max(dates);
-        const fmtISO = d3.utcFormat("%Y-%m-%d");
-        setDateRange({ start: fmtISO(minDate), end: fmtISO(maxDate) });
-
+        // Initial render
         renderChart(raw, legendGroups);
-      })
-      .catch((err) => console.error("Failed to load JSON:", err));
+      } catch (err) {
+        console.error("💥 Error loading data:", err);
+      }
+    }
+
+    loadData();
   }, []);
+
+
 
   useEffect(() => {
     if (!rawDataRef.current || !legendRef.current) return;

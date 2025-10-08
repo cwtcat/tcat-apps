@@ -3,13 +3,13 @@ import json
 from pathlib import Path
 
 # === Configurable date range (default: 2025-03-01 to 2025-05-01, UTC aware) ===
-DATE_START = pd.Timestamp("2024-07-01", tz="UTC")
+DATE_START = pd.Timestamp("2025-03-01", tz="UTC")
 DATE_END = pd.Timestamp("2025-07-01", tz="UTC")
 
 # === Input & output paths ===
 INPUT_CSV = Path("all_riders.csv")
-FILTERED_JSON = Path("cornell_filtered.json")
-SUMMARY_JSON = Path("cornell_summary.json")
+FILTERED_JSON = Path("cornell_filtered_02.json")
+SUMMARY_JSON = Path("cornell_summary_02.json")
 
 # === CSV column schema ===
 COLS = [
