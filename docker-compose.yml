@@ -18,7 +18,8 @@ services:
     networks:
       - web
     volumes:
-      - /opt/tcat-apps/public:/usr/share/nginx/html:ro
+      #- /opt/tcat-apps/public:/usr/share/nginx/html:ro
+      - /opt/tcat-apps/dist:/usr/share/nginx/html:ro
 
 networks:
   web:
