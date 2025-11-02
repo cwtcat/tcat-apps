@@ -1,27 +1,24 @@
 version: "3.9"
 
 services:
-  tcat_dashboard:
-    build:
-      context: .
-    image: tcat-dashboard:latest
+  tcat_app:
+    build: .
+    image: tcat-app:latest
     restart: unless-stopped
     expose:
       - "80"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.tcatdashboard.rule=Host(`tcat.convergentcode.com`) && PathPrefix(`/dashboard`)"
-      - "traefik.http.routers.tcatdashboard.priority=20"
-      - "traefik.http.routers.tcatdashboard.entrypoints=web,websecure"
-      - "traefik.http.routers.tcatdashboard.tls.certresolver=le"
-      - "traefik.http.services.tcatdashboard.loadbalancer.server.port=80"
-      - "traefik.http.middlewares.strip-dashboard.stripPrefix.prefixes=/dashboard"
-      - "traefik.http.routers.tcatdashboard.middlewares=strip-dashboard,office-whitelist@file"
+      - "traefik.http.routers.tcatapp.rule=Host(`tcat.convergentcode.com`) && PathPrefix(`/apps/ridership`)"
+      - "traefik.http.routers.tcatapp.entrypoints=web,websecure"
+      - "traefik.http.routers.tcatapp.tls.certresolver=le"
+      - "traefik.http.services.tcatapp.loadbalancer.server.port=80"
+      # optional if you have IP filtering
+      # - "traefik.http.routers.tcatapp.middlewares=office-whitelist@file"
     networks:
       - web
     volumes:
-      - /opt/tcat-apps/public:/usr/share/nginx/html/day_chart:ro
-      - /opt/tcat-apps/nginx.conf:/etc/nginx/conf.d/default.conf:ro  # 👈 custom config
+      - /opt/tcat-apps/public:/usr/share/nginx/html:ro
 
 networks:
   web:
