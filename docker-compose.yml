@@ -17,7 +17,7 @@ services:
     networks:
       - web
     volumes:
-      - /opt/tcat-apps/dist:/usr/share/nginx/html:ro   # 👈 use dist, not public
+      - /opt/tcat-apps/dist:/usr/share/nginx/html:ro
 
 networks:
   web:
