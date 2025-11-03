@@ -10,16 +10,14 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tcatapp.rule=Host(`tcat.convergentcode.com`) && PathPrefix(`/apps/ridership`)"
+      - "traefik.http.routers.tcatapp.priority=10"
       - "traefik.http.routers.tcatapp.entrypoints=web,websecure"
       - "traefik.http.routers.tcatapp.tls.certresolver=le"
       - "traefik.http.services.tcatapp.loadbalancer.server.port=80"
-      # optional if you have IP filtering
-      # - "traefik.http.routers.tcatapp.middlewares=office-whitelist@file"
     networks:
       - web
     volumes:
-      #- /opt/tcat-apps/public:/usr/share/nginx/html:ro
-      - /opt/tcat-apps/dist:/usr/share/nginx/html:ro
+      - /opt/tcat-apps/dist:/usr/share/nginx/html:ro   # 👈 use dist, not public
 
 networks:
   web:
