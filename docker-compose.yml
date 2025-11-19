@@ -10,7 +10,7 @@ services:
     labels:
       - "traefik.enable=true"
 
-      # ROUTER: Only match this app when path begins with /apps/ridership
+      # ROUTER: only match this app when path begins with /apps/ridership
       - "traefik.http.routers.tcatapp.rule=Host(`tcat.convergentcode.com`) && PathPrefix(`/apps/ridership`)"
 
       # HTTPS / Certs
