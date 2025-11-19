@@ -9,14 +9,27 @@ services:
       - "80"
     labels:
       - "traefik.enable=true"
+
+      # ROUTER: Only match this app when path begins with /apps/ridership
       - "traefik.http.routers.tcatapp.rule=Host(`tcat.convergentcode.com`) && PathPrefix(`/apps/ridership`)"
-      - "traefik.http.routers.tcatapp.entrypoints=web,websecure"
+
+      # HTTPS / Certs
+      - "traefik.http.routers.tcatapp.entrypoints=websecure"
       - "traefik.http.routers.tcatapp.tls.certresolver=le"
-      - "traefik.http.routers.tcatapp.priority=10"
-      - "traefik.http.routers.tcatapp.middlewares=ridership-strip-prefix@file"
+
+      # PRIORITY: Must be higher than landing page
+      - "traefik.http.routers.tcatapp.priority=100"
+
+      # MIDDLEWARE: Strip /apps/ridership so nginx sees "/"
+      - "traefik.http.middlewares.ridership-strip.stripprefix.prefixes=/apps/ridership"
+      - "traefik.http.routers.tcatapp.middlewares=ridership-strip"
+
+      # SERVICE PORT: Nginx inside container is listening on 80
       - "traefik.http.services.tcatapp.loadbalancer.server.port=80"
+
     networks:
       - web
+
     volumes:
       - /opt/tcat-apps/dist:/usr/share/nginx/html:ro
 
