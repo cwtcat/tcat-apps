@@ -26,7 +26,7 @@ export default function RidershipChart() {
 
   useEffect(() => {
     Promise.all([
-      import("../assets/rc_data.json"),
+      import("../assets/rc_data_01.json"),
       import("../assets/legend_groups.json"),
     ]).then(([dataModule, legendModule]) => {
       const raw: DataRow[] = dataModule.default;

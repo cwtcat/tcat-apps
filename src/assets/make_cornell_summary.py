@@ -8,8 +8,8 @@ DATE_END = pd.Timestamp("2025-07-01", tz="UTC")
 
 # === Input & output paths ===
 INPUT_CSV = Path("all_riders.csv")
-FILTERED_JSON = Path("cornell_filtered_02.json")
-SUMMARY_JSON = Path("cornell_summary_02.json")
+FILTERED_JSON = Path("cornell_filtered_01.json")
+SUMMARY_JSON = Path("cornell_summary.json")
 
 # === CSV column schema ===
 COLS = [
