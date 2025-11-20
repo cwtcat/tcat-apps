@@ -7,31 +7,35 @@ services:
     restart: unless-stopped
     expose:
       - "80"
+
     labels:
       - "traefik.enable=true"
 
       # ROUTER: only match this app when path begins with /apps/ridership
       - "traefik.http.routers.tcatapp.rule=Host(`tcat.convergentcode.com`) && PathPrefix(`/apps/ridership`)"
 
-      # HTTPS / Certs
+      # HTTPS
       - "traefik.http.routers.tcatapp.entrypoints=websecure"
       - "traefik.http.routers.tcatapp.tls.certresolver=le"
 
-      # PRIORITY: Must be higher than landing page
+      # PRIORITY: higher than landing page
       - "traefik.http.routers.tcatapp.priority=100"
 
-      # MIDDLEWARE: Strip /apps/ridership so nginx sees "/"
+      # MIDDLEWARE: Strip /apps/ridership so Nginx sees "/"
       - "traefik.http.middlewares.ridership-strip.stripprefix.prefixes=/apps/ridership"
       - "traefik.http.routers.tcatapp.middlewares=ridership-strip"
 
-      # SERVICE PORT: Nginx inside container is listening on 80
+      # SERVICE PORT: Nginx inside container is on port 80
       - "traefik.http.services.tcatapp.loadbalancer.server.port=80"
 
     networks:
       - web
 
-    volumes:
-      - /opt/tcat-apps/dist:/usr/share/nginx/html:ro
+    # IMPORTANT:
+    # REMOVE the volume! Let the image serve its OWN dist files.
+    # Mounting /opt/tcat-apps/dist was overwriting /usr/share/nginx/html,
+    # removing your day_charts/ folder and breaking PNG loading.
+    volumes: []
 
 networks:
   web:
