@@ -94,7 +94,7 @@ export default function BusDrilldown({
   width = 1100,
   height = 720,
   transitionMs = 1500,
-  pngDir = '/day_charts/',
+pngDir = 'day_charts/',
 }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null)
   const tooltipRef = useRef<HTMLDivElement | null>(null)
@@ -301,7 +301,16 @@ export default function BusDrilldown({
         // Build image URL: "{pngDir}{YYMMDD}_{bus}_chart.png"
         const dateId = toDateId(d.service_day)
         if (!dateId) return
-        const url = `${pngDir}${dateId}_${busId}_chart.png`
+        // Use Vite’s BASE_URL to ensure correct routing via Traefik
+        const base = import.meta.env.BASE_URL || "/"
+
+        const normalizedBase =
+          base.endsWith("/") ? base.slice(0, -1) : base
+
+        const normalizedPngDir =
+          pngDir.startsWith("/") ? pngDir.slice(1) : pngDir
+
+        const url = `${normalizedBase}/${normalizedPngDir}${dateId}_${busId}_chart.png`
         // reset preview state and open
         setImgLoaded(false)
         setImgError(false)
