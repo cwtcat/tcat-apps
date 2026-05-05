@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+output/
+*.png
+
+public/day_charts/
+public/data/
+*.png
+*.csv
